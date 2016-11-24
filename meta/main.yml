@@ -1,0 +1,15 @@
+---
+
+dependencies: []
+
+galaxy_info:
+  author: nemesisdesign
+  description: Generate different OpenWISP2 firmware images for several organizations
+  license: MIT
+  platforms:
+  - name: Debian
+    versions:
+    - wheezy
+    - jessie
+  categories:
+    - networking
