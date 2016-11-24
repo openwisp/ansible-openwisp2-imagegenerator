@@ -1,0 +1,2 @@
+- include: apt.yml
+  tags: [openwisp2fw, apt]

@@ -1,0 +1,10 @@
+# apt packages needed for compilation
+openwisp2fw_apt_make_dependencies:
+    - build-essential
+    - git
+    - libncurses5-dev
+    - zlib1g-dev
+    - unzip
+    - libssl-dev
+    - subversion
+    - wget
