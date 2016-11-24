@@ -1,0 +1,22 @@
+# enable image builder
+CONFIG_IB=y
+CONFIG_IB_STANDALONE=y
+
+# avoid broken feeds in /etc/opkg/distfeeds.conf
+# CONFIG_FEED_openwisp is not set
+# CONFIG_FEED_luciopenwisp is not set
+
+# openwisp2 related packages
+{% for package in openwisp2fw_base_default_packages %}
+CONFIG_PACKAGE_{{ package }}=y
+{% endfor %}
+
+# additional packages
+{% for package in openwisp2fw_base_additional_packages %}
+CONFIG_PACKAGE_{{ package }}=y
+{% endfor %}
+
+# other configurations
+{% for config in openwisp2_base_other_configs %}
+{{ config }}
+{% endfor %}

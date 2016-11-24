@@ -1,3 +1,5 @@
+openwisp2fw_base_recompile: "{{ recompile|default(false) }}"
+openwisp2fw_base_cores: "{{ cores|default(1) }}"
 # apt packages needed for compilation
 openwisp2fw_apt_make_dependencies:
     - build-essential
@@ -8,3 +10,45 @@ openwisp2fw_apt_make_dependencies:
     - libssl-dev
     - subversion
     - wget
+# base OpenWRT or LEDE repository, defaults to official OpenWRT repo
+openwisp2fw_base_repo: https://github.com/openwrt/openwrt.git
+# base OpenWRT or LEDE version, defaults to HEAD (master git branch)
+# accepted values: "HEAD", a branch name, a tag name or a SHA-1 commit hash
+openwisp2fw_base_version: HEAD
+openwisp2fw_base_dest: ~/openwisp2-imagebuilder
+openwisp2fw_base_feeds:
+    - method: src-git
+      name: packages
+      location: https://github.com/openwrt/packages.git
+    - method: src-git
+      name: luci
+      location: https://github.com/openwrt/luci.git
+    - method: src-git
+      name: targets
+      location: https://github.com/openwrt/targets.git
+    - method: src-git
+      name: openwisp
+      location: https://github.com/openwisp/openwisp-config.git
+    - method: src-git
+      name: luciopenwisp
+      location: https://github.com/openwisp/luci-openwisp.git
+openwisp2fw_base_default_packages:
+    - openwisp-config-openssl
+    - openwisp-config-polarssl
+    - luci-openwisp-openssl
+    - luci-openwisp-polarssl
+    - openvpn-openssl
+    - openvpn-polarssl
+openwisp2fw_base_additional_packages:
+    - wpad
+    - iputils-ping
+    - ip-full
+openwisp2_base_other_configs:
+    - CONFIG_BUSYBOX_CUSTOM=y
+    - CONFIG_BUSYBOX_CONFIG_FEATURE_EDITING_SAVEHISTORY=y
+    - CONFIG_BUSYBOX_CONFIG_FEATURE_EDITING_SAVE_ON_EXIT=y
+    - CONFIG_BUSYBOX_CONFIG_FEATURE_REVERSE_SEARCH=y
+    - CONFIG_BUSYBOX_CONFIG_FEATURE_VI_UNDO=y
+openwisp2_base_archs:
+    - ar71xx
+    - x86

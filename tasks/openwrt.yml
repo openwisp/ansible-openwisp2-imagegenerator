@@ -1,0 +1,42 @@
+# compile OpenWRT/LEDE Image Generator
+
+- name: Update base git repo
+  git:
+    repo: "{{ openwisp2fw_base_repo }}"
+    dest: "{{ openwisp2fw_base_dest }}"
+    version: "{{ openwisp2fw_base_version }}"
+
+- name: Set feeds.conf
+  template:
+    src: feeds.conf.jinja2
+    dest: "{{ openwisp2fw_base_dest }}/feeds.conf"
+
+- name: OpenWRT .config
+  template:
+    src: openwrt.config.jinja2
+    dest: "{{ openwisp2fw_base_dest }}/.config"
+
+- name: ./scripts/feeds update -a
+  shell: ./scripts/feeds update -a
+  args:
+    chdir: "{{ openwisp2fw_base_dest }}"
+  register: update_result
+  changed_when: "'Collecting package info' in update_result.stderr"
+
+- name: ./scripts/feeds install -a
+  shell: ./scripts/feeds install -a
+  args:
+    chdir: "{{ openwisp2fw_base_dest }}"
+  register: install_result
+  changed_when: "'Installing package' in install_result.stderr"
+
+- name: Prepare compile.sh
+  template:
+    src: compile.sh.jinja2
+    dest: "{{ openwisp2fw_base_dest }}/compile.sh"
+    mode: 0755
+
+- name: ./compile.sh
+  shell: ./compile.sh
+  args:
+    chdir: "{{ openwisp2fw_base_dest }}"

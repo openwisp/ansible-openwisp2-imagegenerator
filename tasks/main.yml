@@ -1,2 +1,6 @@
 - include: apt.yml
   tags: [openwisp2fw, apt]
+
+- include: openwrt.yml
+  tags: [openwisp2fw, openwrt]
+  when: openwisp2fw_base_recompile
