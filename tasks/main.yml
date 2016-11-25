@@ -4,3 +4,6 @@
 - include: 2-openwrt.yml
   tags: [openwisp2fw, openwrt]
   when: openwisp2fw_base_recompile
+
+- include: 3-generator.yml
+  tags: [openwisp2fw, generator]

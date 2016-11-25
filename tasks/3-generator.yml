@@ -1,0 +1,20 @@
+- name: "Remove {{ openwisp2fw_generator_dir }} (cleanup)"
+  file:
+    path: "{{ openwisp2fw_generator_dir }}"
+    state: absent
+
+- name: "Create {{ openwisp2fw_generator_dir }}"
+  file:
+    path: "{{ openwisp2fw_generator_dir }}"
+    state: directory
+
+- name: Extract ImageBuilders
+  unarchive:
+    copy: false
+    src: "{{ openwisp2fw_base_dir }}/bin/{{ item }}/OpenWrt-ImageBuilder-{{ item }}-generic.Linux-x86_64.tar.bz2"
+    dest: "{{ openwisp2fw_generator_dir }}"
+  with_items: "{{ openwisp2fw_base_archs }}"
+
+- name: Rename ImageBuilder dirs to their corresponding arch
+  shell: "mv {{ openwisp2fw_generator_dir }}/OpenWrt-ImageBuilder-{{ item }}-generic.Linux-x86_64 {{ openwisp2fw_generator_dir }}/{{ item }}"
+  with_items: "{{ openwisp2fw_base_archs }}"

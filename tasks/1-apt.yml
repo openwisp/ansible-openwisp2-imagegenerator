@@ -4,5 +4,5 @@
 
 - name: Upgrade make dependencies
   apt: name={{ item }} state=latest
-  with_items: openwisp2fw_apt_make_dependencies
+  with_items: "{{ openwisp2fw_apt_make_dependencies }}"
   become: true

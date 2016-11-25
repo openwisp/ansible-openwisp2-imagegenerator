@@ -1,3 +1,4 @@
+openwisp2fw_openssl_lib: polarssl
 openwisp2fw_base_recompile: "{{ recompile|default(false) }}"
 openwisp2fw_base_cores: "{{ cores|default(1) }}"
 # apt packages needed for compilation
@@ -52,3 +53,37 @@ openwisp2fw_base_other_configs:
 openwisp2fw_base_archs:
     - ar71xx
     - x86
+openwisp2fw_generator_dir: ~/openwisp2-firmware-generator
+openwisp2fw_image_dir: ~/openwisp2-firmware-images
+openwisp2fw_image_flavours:
+    - default:
+        profile: Default
+        packages: "{{ openwisp2fw_default_packages }}"
+openwisp2fw_default_packages:
+    # these packages will be removed
+    - -iptables
+    - -ip6tables
+    - -ppp
+    - -ppp-mod-pppoe
+    - -firewall
+    - -odhcpd
+    - -odhcp6c
+    - -wpad-mini
+    # these packages will be added
+    - uhttpd
+    - uhttpd-mod-ubus
+    - px5g
+    - wpad
+    - iputils-ping
+    - ip-full
+    - iwinfo
+    - luci-theme-openwisp
+    - luci-mod-openwisp
+    - libustream-{{ openwisp2fw_openssl_lib }}
+    - openvpn-{{ openwisp2fw_openssl_lib }}
+    - openwisp-config-{{ openwisp2fw_openssl_lib }}
+openwisp2fw_default_unmanaged:
+    - system.@led
+    - network.loopback
+    - network.@switch
+    - network.@switch_vlan

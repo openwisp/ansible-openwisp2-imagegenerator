@@ -1,4 +1,4 @@
-# compile OpenWRT/LEDE Image Generator
+# compile OpenWRT/LEDE in order to produce the ImageBuilder(s)
 
 - name: Update base git repo
   git:
