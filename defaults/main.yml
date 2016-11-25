@@ -15,7 +15,7 @@ openwisp2fw_base_repo: https://github.com/openwrt/openwrt.git
 # base OpenWRT or LEDE version, defaults to HEAD (master git branch)
 # accepted values: "HEAD", a branch name, a tag name or a SHA-1 commit hash
 openwisp2fw_base_version: HEAD
-openwisp2fw_base_dest: ~/openwisp2-imagebuilder
+openwisp2fw_base_dir: ~/openwisp2-imagegenerator-base
 openwisp2fw_base_feeds:
     - method: src-git
       name: packages
@@ -43,12 +43,12 @@ openwisp2fw_base_additional_packages:
     - wpad
     - iputils-ping
     - ip-full
-openwisp2_base_other_configs:
+openwisp2fw_base_other_configs:
     - CONFIG_BUSYBOX_CUSTOM=y
     - CONFIG_BUSYBOX_CONFIG_FEATURE_EDITING_SAVEHISTORY=y
     - CONFIG_BUSYBOX_CONFIG_FEATURE_EDITING_SAVE_ON_EXIT=y
     - CONFIG_BUSYBOX_CONFIG_FEATURE_REVERSE_SEARCH=y
     - CONFIG_BUSYBOX_CONFIG_FEATURE_VI_UNDO=y
-openwisp2_base_archs:
+openwisp2fw_base_archs:
     - ar71xx
     - x86

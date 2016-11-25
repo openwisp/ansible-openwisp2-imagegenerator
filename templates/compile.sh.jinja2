@@ -1,4 +1,4 @@
-ARCHS="{{ ' '.join(openwisp2_base_archs) }}"
+ARCHS="{{ ' '.join(openwisp2fw_base_archs) }}"
 
 for arch in $ARCHS; do
     echo "CONFIG_TARGET_$arch=y" >> .config;
