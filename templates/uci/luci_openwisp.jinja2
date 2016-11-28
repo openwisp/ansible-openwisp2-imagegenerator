@@ -1,0 +1,4 @@
+config openwisp 'gui'
+{% for key, value in item.luci_openwisp.items() %}
+	option {{ key }} '{{ value }}'
+{% endfor %}

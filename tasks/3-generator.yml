@@ -18,3 +18,60 @@
 - name: Rename ImageBuilder dirs to their corresponding arch
   shell: "mv {{ openwisp2fw_generator_dir }}/OpenWrt-ImageBuilder-{{ item }}-generic.Linux-x86_64 {{ openwisp2fw_generator_dir }}/{{ item }}"
   with_items: "{{ openwisp2fw_base_archs }}"
+
+- name: Create a "files" directory for each organization
+  file:
+    path: "{{ openwisp2fw_generator_dir }}/files/{{ item.name }}"
+    state: directory
+  with_items: "{{ openwisp2fw_organizations }}"
+
+- name: Copy general role files to each organization
+  copy:
+    dest: "{{ openwisp2fw_generator_dir }}/files/{{ item.name }}"
+    src: files/
+  with_items: "{{ openwisp2fw_organizations }}"
+
+# the following task checks whether <playbook-dir>/files/ exists
+# and stores the result of this check in a variable
+- local_action: stat path={{ playbook_dir }}/files
+  register: file_dir
+
+# perform action only if playbook_dir contains a file directory
+- name: Copy general playbook files to each organization
+  copy:
+    dest: "{{ openwisp2fw_generator_dir }}/files/{{ item.name }}"
+    src: "{{ playbook_dir }}/files/"
+  with_items: "{{ openwisp2fw_organizations }}"
+  when: file_dir.stat.exists == true
+
+- name: /etc/config/openwisp
+  template:
+    dest: "{{ openwisp2fw_generator_dir }}/files/{{ item.name }}/etc/config/openwisp"
+    src: uci/openwisp.jinja2
+  with_items: "{{ openwisp2fw_organizations }}"
+  when: item.openwisp
+
+- name: /etc/config/luci_openwisp
+  template:
+    dest: "{{ openwisp2fw_generator_dir }}/files/{{ item.name }}/etc/config/luci_openwisp"
+    src: uci/luci_openwisp.jinja2
+  with_items: "{{ openwisp2fw_organizations }}"
+  when: item.luci_openwisp
+
+# the following task loops over each organization and checks whether
+# <playbook-dir>/organizations/<organization-name>/ exists
+# and stores the result of this check in a variable
+- local_action: stat path={{ playbook_dir }}/organizations/{{ item.name }}
+  register: organization_dirs
+  with_items: "{{ openwisp2fw_organizations }}"
+
+# perform action only if corresponding organization directory exist
+# eg:
+#   if <playbook-dir>/organizations/<organization-name> exists
+#   then include its contents
+- name: Copy organization specific files stored in playbook directory
+  copy:
+    dest: "{{ openwisp2fw_generator_dir }}/files/{{ item.item.name }}"
+    src: "{{ playbook_dir }}/organizations/{{ item.item.name }}/"
+  with_items: "{{ organization_dirs.results }}"
+  when: item.stat.exists == true

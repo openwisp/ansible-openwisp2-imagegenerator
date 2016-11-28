@@ -87,3 +87,4 @@ openwisp2fw_default_unmanaged:
     - network.loopback
     - network.@switch
     - network.@switch_vlan
+openwisp2fw_organizations: {}
