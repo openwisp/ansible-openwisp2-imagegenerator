@@ -1,5 +1,3 @@
-# compile OpenWRT/LEDE in order to produce the ImageBuilder(s)
-
 - name: Update base git repo
   git:
     repo: "{{ openwisp2fw_base_repo }}"
@@ -8,12 +6,12 @@
 
 - name: Set feeds.conf
   template:
-    src: feeds.conf.jinja2
+    src: openwrt/feeds.conf.jinja2
     dest: "{{ openwisp2fw_base_dir }}/feeds.conf"
 
 - name: OpenWRT .config
   template:
-    src: openwrt.config.jinja2
+    src: openwrt/.config.jinja2
     dest: "{{ openwisp2fw_base_dir }}/.config"
 
 - name: ./scripts/feeds update -a
@@ -32,7 +30,7 @@
 
 - name: Prepare compile.sh
   template:
-    src: compile.sh.jinja2
+    src: openwrt/compile.sh.jinja2
     dest: "{{ openwisp2fw_base_dir }}/compile.sh"
     mode: 0755
 
