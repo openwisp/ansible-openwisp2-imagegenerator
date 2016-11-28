@@ -1,9 +1,15 @@
+# install system dependencies
 - include: 1-apt.yml
   tags: [openwisp2fw, apt]
 
+# compile OpenWRT/LEDE in order to produce the ImageBuilder(s)
+# these actions are performed only if "recompile=1" is passed as an extra param
+# or if openwisp2fw_base_recompile == true
 - include: 2-openwrt.yml
   tags: [openwisp2fw, openwrt]
   when: openwisp2fw_base_recompile
 
+# prepare ImageGenerator directory and files
+# but do not compile images yet
 - include: 3-generator.yml
   tags: [openwisp2fw, generator]
