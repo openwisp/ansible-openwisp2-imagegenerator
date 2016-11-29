@@ -33,6 +33,8 @@ openwisp2fw_base_feeds:
     - method: src-git
       name: luciopenwisp
       location: https://github.com/openwisp/luci-openwisp.git
+# the following packages will be compiled and added
+# to all the firmware images by default
 openwisp2fw_base_default_packages:
     - openwisp-config-openssl
     - openwisp-config-polarssl
@@ -40,10 +42,27 @@ openwisp2fw_base_default_packages:
     - luci-openwisp-polarssl
     - openvpn-openssl
     - openvpn-polarssl
+# the following packages are compiled for convenience
+# so they can be added by using playbook variables if needed
 openwisp2fw_base_additional_packages:
     - wpad
     - iputils-ping
     - ip-full
+    - wget
+    - kmod-3c59x
+    - kmod-e100
+    - kmod-e1000
+    - kmod-natsemi
+    - kmod-ne2k-pci
+    - kmod-pcnet32
+    - kmod-8139too
+    - kmod-r8169
+    - kmod-sis900
+    - kmod-tg3
+    - kmod-via-rhine
+    - kmod-via-velocity
+    - kmod-button-hotplug
+    - partx-utils
 openwisp2fw_base_other_configs:
     - CONFIG_BUSYBOX_CUSTOM=y
     - CONFIG_BUSYBOX_CONFIG_FEATURE_EDITING_SAVEHISTORY=y
@@ -56,8 +75,12 @@ openwisp2fw_base_archs:
 openwisp2fw_generator_dir: ~/openwisp2-firmware-generator
 openwisp2fw_image_dir: ~/openwisp2-firmware-images
 openwisp2fw_image_flavours:
-    - default:
+    standard:
+      ar71xx:
         profile: Default
+        packages: "{{ openwisp2fw_default_packages }}"
+      x86:
+        profile: Generic
         packages: "{{ openwisp2fw_default_packages }}"
 openwisp2fw_default_packages:
     # these packages will be removed
@@ -68,15 +91,10 @@ openwisp2fw_default_packages:
     - -firewall
     - -odhcpd
     - -odhcp6c
-    - -wpad-mini
     # these packages will be added
     - uhttpd
     - uhttpd-mod-ubus
     - px5g
-    - wpad
-    - iputils-ping
-    - ip-full
-    - iwinfo
     - luci-theme-openwisp
     - luci-mod-openwisp
     - libustream-{{ openwisp2fw_openssl_lib }}
@@ -87,4 +105,16 @@ openwisp2fw_default_unmanaged:
     - network.loopback
     - network.@switch
     - network.@switch_vlan
-openwisp2fw_organizations: {}
+openwisp2fw_bin_dir: /var/www/openwisp2-firmware-builds
+openwisp2fw_organizations:
+    - name: testorg
+      flavours:
+        - standard
+      luci_openwisp:
+        username: "operator"
+        password: "$1$openwisp$iQpdG2IrO4lya98cODuUB/"  # password
+        salt: "openwisp"
+      openwisp:
+        url: ""
+        secret: ""
+        unmanaged: "{{ openwisp2fw_default_unmanaged }}"

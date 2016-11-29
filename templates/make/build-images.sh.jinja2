@@ -1,0 +1,41 @@
+#!/bin/bash
+ARCHS="{{ ' '.join(openwisp2fw_base_archs) }}"
+BASEDIR="{{ openwisp2fw_generator_dir }}"
+START_TIME=$(date +"%Y-%m-%d-%H%M%S")
+{% for arch in openwisp2fw_base_archs %}
+    {% for org in openwisp2fw_organizations %}
+
+        arch="{{ arch }}"
+        org="{{ org.name }}"
+        files_dir=$BASEDIR/files/$org
+        cd $BASEDIR/$arch
+        {% for flavour_string in org.flavours %}
+            {% set flavour = openwisp2fw_image_flavours[flavour_string] %}
+            {# build image for arch/org/flavour #}
+            flavour="{{ flavour_string }}"
+            profile="{{ flavour[arch].profile }}"
+            packages="{{ ' '.join(flavour[arch].packages) }}"
+            bin_dir="{{ openwisp2fw_bin_dir }}/$org/$flavour/$START_TIME"
+            latest_path="{{ openwisp2fw_bin_dir }}/$org/$flavour/latest"
+            echo "==================================="
+            echo "$arch / $org / $flavour"
+            make image PROFILE="$profile" \
+                       PACKAGES="$packages" \
+                       FILES="$files_dir" \
+                       BIN_DIR="$bin_dir"
+            {# detect failures #}
+            exit_code=$?
+            if [ "$exit_code" != "0" ]; then
+                echo "FAILED: PROFILE=\"$profile\" PACKAGES=\"$packages\" FILES=\"$files_dir\" BIN_DIR=\"$bin_dir\""
+                rm -rf $bin_dir
+                exit 1
+            fi
+        {% endfor %}
+        {# link to latest compilation for convenience #}
+        if [ -s $latest_path ]; then
+            rm $latest_path
+        fi
+        ln -s $bin_dir $latest_path
+
+    {% endfor %}
+{% endfor %}

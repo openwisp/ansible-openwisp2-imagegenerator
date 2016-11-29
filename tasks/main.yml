@@ -13,3 +13,8 @@
 # but do not compile images yet
 - include: 3-generator.yml
   tags: [openwisp2fw, generator]
+
+# compile images for each organization and flavour
+# store binaries in versioned directories
+- include: 4-make.yml
+  tags: [openwisp2fw, make]
