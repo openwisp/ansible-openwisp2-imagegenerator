@@ -5,6 +5,13 @@ ansible-openwisp2-imagegenerator
 
 TODO.
 
+Compilation process
+-------------------
+
+1. compile OpenWRT/LEDE in order to produce Image Generators
+2. extract ImageGenerator archives for each architecture
+3. build custom images for each organization and flavour
+
 Organizations
 -------------
 
@@ -24,6 +31,18 @@ How to create new flavours
 Additional files
 ----------------
 
-How to add files that will be added to all organizations
+How to add files that will be added to all organizations: put them in a dir called "files/" in your playbook directory.
 
 How to add files for specific organizations
+
+Params
+------
+
+recompile
+
+cores
+
+Available playbook variables
+----------------------------
+
+TODO.
