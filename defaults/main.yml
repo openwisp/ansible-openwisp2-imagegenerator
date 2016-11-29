@@ -15,7 +15,7 @@ openwisp2fw_apt_make_dependencies:
 openwisp2fw_base_repo: https://github.com/openwrt/openwrt.git
 # base OpenWRT or LEDE version, defaults to HEAD (master git branch)
 # accepted values: "HEAD", a branch name, a tag name or a SHA-1 commit hash
-openwisp2fw_base_version: HEAD
+openwisp2fw_base_version: v15.05.1
 openwisp2fw_base_dir: ~/openwisp2-imagegenerator-base
 openwisp2fw_base_feeds:
     - method: src-git
