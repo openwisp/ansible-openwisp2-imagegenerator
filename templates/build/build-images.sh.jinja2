@@ -1,8 +1,9 @@
 #!/bin/bash
-ARCHS="{{ ' '.join(openwisp2fw_base_archs) }}"
+ARCHS="{{ ' '.join(openwisp2fw_source_archs) }}"
 BASEDIR="{{ openwisp2fw_generator_dir }}"
+BINDIR="{{ openwisp2fw_bin_dir }}"
 START_TIME=$(date +"%Y-%m-%d-%H%M%S")
-{% for arch in openwisp2fw_base_archs %}
+{% for arch in openwisp2fw_source_archs %}
     {% for org in openwisp2fw_organizations %}
 
         arch="{{ arch }}"
@@ -15,8 +16,8 @@ START_TIME=$(date +"%Y-%m-%d-%H%M%S")
             flavour="{{ flavour_string }}"
             profile="{{ flavour[arch].profile }}"
             packages="{{ ' '.join(flavour[arch].packages) }}"
-            bin_dir="{{ openwisp2fw_bin_dir }}/$org/$flavour/$START_TIME"
-            latest_path="{{ openwisp2fw_bin_dir }}/$org/$flavour/latest"
+            bin_dir="$BINDIR/$org/$flavour/$START_TIME"
+            latest_path="$BINDIR/$org/$flavour/latest"
             echo "==================================="
             echo "$arch / $org / $flavour"
             make image PROFILE="$profile" \

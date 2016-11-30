@@ -1,40 +1,26 @@
 - name: Update base git repo
   git:
-    repo: "{{ openwisp2fw_base_repo }}"
-    dest: "{{ openwisp2fw_base_dir }}"
-    version: "{{ openwisp2fw_base_version }}"
+    repo: "{{ openwisp2fw_source_repo }}"
+    dest: "{{ openwisp2fw_source_dir }}"
+    version: "{{ openwisp2fw_source_version }}"
 
 - name: Set feeds.conf
   template:
     src: compile/feeds.conf.jinja2
     dest: "{{ openwisp2fw_source_dir }}/feeds.conf"
 
-- name: OpenWRT .config
+- name: Prepare default .config
   template:
-    src: openwrt/.config.jinja2
-    dest: "{{ openwisp2fw_base_dir }}/.config"
-
-- name: ./scripts/feeds update -a
-  shell: ./scripts/feeds update -a
-  args:
-    chdir: "{{ openwisp2fw_base_dir }}"
-  register: update_result
-  changed_when: "'Collecting package info' in update_result.stderr"
-
-- name: ./scripts/feeds install -a
-  shell: ./scripts/feeds install -a
-  args:
-    chdir: "{{ openwisp2fw_base_dir }}"
-  register: install_result
-  changed_when: "'Installing package' in install_result.stderr"
+    src: compile/.config.jinja2
+    dest: "{{ openwisp2fw_source_dir }}/.config.default"
 
 - name: Prepare compile.sh
   template:
-    src: openwrt/compile.sh.jinja2
-    dest: "{{ openwisp2fw_base_dir }}/compile.sh"
+    src: compile/compile.sh.jinja2
+    dest: "{{ openwisp2fw_source_dir }}/compile.sh"
     mode: 0755
 
 - name: ./compile.sh
   shell: ./compile.sh
   args:
-    chdir: "{{ openwisp2fw_base_dir }}"
+    chdir: "{{ openwisp2fw_source_dir }}"

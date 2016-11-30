@@ -5,6 +5,18 @@ ansible-openwisp2-imagegenerator
 
 TODO.
 
+Required variables:
+
+```yaml
+- hosts: compiler
+  roles:
+    - openwisp.openwisp2-imagegenerator
+  vars:
+    openwisp2fw_source_dir: /home/user/openwisp2-firmware-source
+    openwisp2fw_generator_dir: /home/user/openwisp2-firmware-generator
+    openwisp2fw_bin_dir: /home/user/openwisp2-firmware-builds
+```
+
 Compilation process
 -------------------
 
@@ -33,7 +45,7 @@ Additional files
 
 How to add files that will be added to all organizations: put them in a dir called "files/" in your playbook directory.
 
-How to add files for specific organizations
+How to add files for specific organizations - this means that during this step it is possible to overwrite any file generated previously.
 
 Params
 ------

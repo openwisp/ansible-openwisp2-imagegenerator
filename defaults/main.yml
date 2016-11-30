@@ -1,6 +1,6 @@
+openwisp2fw_source_recompile: "{{ recompile|default(false) }}"
+openwisp2fw_source_cores: "{{ cores|default(1) }}"
 openwisp2fw_openssl_lib: polarssl
-openwisp2fw_base_recompile: "{{ recompile|default(false) }}"
-openwisp2fw_base_cores: "{{ cores|default(1) }}"
 # apt packages needed for compilation
 openwisp2fw_apt_make_dependencies:
     - build-essential
@@ -12,13 +12,12 @@ openwisp2fw_apt_make_dependencies:
     - subversion
     - wget
 # base OpenWRT or LEDE repository, defaults to official OpenWRT repo
-openwisp2fw_base_repo: https://github.com/openwrt/openwrt.git
+openwisp2fw_source_repo: https://github.com/openwrt/openwrt.git
 # base OpenWRT or LEDE version, defaults to HEAD (master git branch)
 # accepted values: "HEAD", a branch name, a tag name or a SHA-1 commit hash
-openwisp2fw_base_version: v15.05.1
-openwisp2fw_base_dir: ~/openwisp2-imagegenerator-base
-openwisp2fw_base_feeds:
+openwisp2fw_source_version: HEAD
 # contents of feeds.conf
+openwisp2fw_source_feeds:
     - method: src-git
       name: packages
       location: https://github.com/openwrt/packages.git
@@ -41,16 +40,13 @@ openwisp2fw_base_feeds:
       branch: master
 # the following packages will be compiled and added
 # to all the firmware images by default
-openwisp2fw_base_default_packages:
-    - openwisp-config-openssl
-    - openwisp-config-polarssl
-    - luci-openwisp-openssl
-    - luci-openwisp-polarssl
-    - openvpn-openssl
-    - openvpn-polarssl
+openwisp2fw_source_default_packages:
+    - openwisp-config-{{ openwisp2fw_openssl_lib }}
+    - luci-openwisp-{{ openwisp2fw_openssl_lib }}
+    - openvpn-{{ openwisp2fw_openssl_lib }}
 # the following packages are compiled for convenience
 # so they can be added by using playbook variables if needed
-openwisp2fw_base_additional_packages:
+openwisp2fw_source_additional_packages:
     - wpad
     - iputils-ping
     - ip-full
@@ -69,17 +65,17 @@ openwisp2fw_base_additional_packages:
     - kmod-via-velocity
     - kmod-button-hotplug
     - partx-utils
-openwisp2fw_base_other_configs:
+openwisp2fw_source_other_configs:
     - CONFIG_BUSYBOX_CUSTOM=y
     - CONFIG_BUSYBOX_CONFIG_FEATURE_EDITING_SAVEHISTORY=y
     - CONFIG_BUSYBOX_CONFIG_FEATURE_EDITING_SAVE_ON_EXIT=y
     - CONFIG_BUSYBOX_CONFIG_FEATURE_REVERSE_SEARCH=y
     - CONFIG_BUSYBOX_CONFIG_FEATURE_VI_UNDO=y
-openwisp2fw_base_archs:
+    # workaround to avoid conflicts between wpad and wpad-mini
+    - "# CONFIG_PACKAGE_wpad-mini is not set"
+openwisp2fw_source_archs:
     - ar71xx
     - x86
-openwisp2fw_generator_dir: ~/openwisp2-firmware-generator
-openwisp2fw_image_dir: ~/openwisp2-firmware-images
 openwisp2fw_image_flavours:
     standard:
       ar71xx:
@@ -111,7 +107,6 @@ openwisp2fw_default_unmanaged:
     - network.loopback
     - network.@switch
     - network.@switch_vlan
-openwisp2fw_bin_dir: /var/www/openwisp2-firmware-builds
 openwisp2fw_organizations:
     - name: testorg
       flavours:

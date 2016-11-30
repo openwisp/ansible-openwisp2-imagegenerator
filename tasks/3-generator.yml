@@ -8,16 +8,31 @@
     path: "{{ openwisp2fw_generator_dir }}"
     state: directory
 
-- name: Extract ImageBuilders
+- name: Create find scripts on server
+  template:
+    src: generator/find.sh.jinja2
+    dest: "{{ openwisp2fw_source_dir }}/find-{{ item }}.sh"
+    mode: 0755
+  with_items: "{{ openwisp2fw_source_archs }}"
+
+- name: Call find scripts
+  shell: ./find-{{ item }}.sh chdir={{ openwisp2fw_source_dir }}
+  with_items: "{{ openwisp2fw_source_archs }}"
+
+- name: Extract copies of imagebuilder archives
   unarchive:
     copy: false
-    src: "{{ openwisp2fw_base_dir }}/bin/{{ item }}/OpenWrt-ImageBuilder-{{ item }}-generic.Linux-x86_64.tar.bz2"
+    src: "{{ openwisp2fw_generator_dir }}/{{ item }}.gz"
     dest: "{{ openwisp2fw_generator_dir }}"
-  with_items: "{{ openwisp2fw_base_archs }}"
+  with_items: "{{ openwisp2fw_source_archs }}"
 
-- name: Rename ImageBuilder dirs to their corresponding arch
-  shell: "mv {{ openwisp2fw_generator_dir }}/OpenWrt-ImageBuilder-{{ item }}-generic.Linux-x86_64 {{ openwisp2fw_generator_dir }}/{{ item }}"
-  with_items: "{{ openwisp2fw_base_archs }}"
+- name: Remove copies of imagebuilder archives
+  shell: "rm {{ openwisp2fw_generator_dir }}/{{ item }}.gz"
+  with_items: "{{ openwisp2fw_source_archs }}"
+
+- name: Rename ImageBuilder dirs to just the name of their corresponding arch
+  shell: "mv {{ openwisp2fw_generator_dir }}/*-{{ item }}-* {{ openwisp2fw_generator_dir }}/{{ item }}"
+  with_items: "{{ openwisp2fw_source_archs }}"
 
 - name: Create a "files" directory for each organization
   file:

@@ -6,17 +6,17 @@ CONFIG_IB_STANDALONE=y
 # CONFIG_FEED_openwisp is not set
 # CONFIG_FEED_luciopenwisp is not set
 
-# openwisp2 related packages
-{% for package in openwisp2fw_base_default_packages %}
+# additional packages
+{% for package in openwisp2fw_source_additional_packages %}
 CONFIG_PACKAGE_{{ package }}=y
 {% endfor %}
 
-# additional packages
-{% for package in openwisp2fw_base_additional_packages %}
+# openwisp2 related packages
+{% for package in openwisp2fw_source_default_packages %}
 CONFIG_PACKAGE_{{ package }}=y
 {% endfor %}
 
 # other configurations
-{% for config in openwisp2fw_base_other_configs %}
+{% for config in openwisp2fw_source_other_configs %}
 {{ config }}
 {% endfor %}

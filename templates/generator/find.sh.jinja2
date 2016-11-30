@@ -1,0 +1,3 @@
+#!/bin/bash
+set -e
+find {{ openwisp2fw_source_dir }}/bin/ -iname '*-imagebuilder-{{ item }}-*' -exec cp {} {{ openwisp2fw_generator_dir }}/{{ item }}.gz \;
