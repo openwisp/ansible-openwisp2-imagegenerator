@@ -18,21 +18,27 @@ openwisp2fw_base_repo: https://github.com/openwrt/openwrt.git
 openwisp2fw_base_version: v15.05.1
 openwisp2fw_base_dir: ~/openwisp2-imagegenerator-base
 openwisp2fw_base_feeds:
+# contents of feeds.conf
     - method: src-git
       name: packages
       location: https://github.com/openwrt/packages.git
+      branch: master
     - method: src-git
       name: luci
       location: https://github.com/openwrt/luci.git
+      branch: master
     - method: src-git
       name: targets
       location: https://github.com/openwrt/targets.git
+      branch: master
     - method: src-git
       name: openwisp
       location: https://github.com/openwisp/openwisp-config.git
+      branch: master
     - method: src-git
       name: luciopenwisp
       location: https://github.com/openwisp/luci-openwisp.git
+      branch: master
 # the following packages will be compiled and added
 # to all the firmware images by default
 openwisp2fw_base_default_packages:
