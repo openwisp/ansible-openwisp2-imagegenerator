@@ -6,8 +6,8 @@
 
 - name: Set feeds.conf
   template:
-    src: openwrt/feeds.conf.jinja2
-    dest: "{{ openwisp2fw_base_dir }}/feeds.conf"
+    src: compile/feeds.conf.jinja2
+    dest: "{{ openwisp2fw_source_dir }}/feeds.conf"
 
 - name: OpenWRT .config
   template:

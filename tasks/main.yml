@@ -4,17 +4,17 @@
 
 # compile OpenWRT/LEDE in order to produce the ImageBuilder(s)
 # these actions are performed only if "recompile=1" is passed as an extra param
-# or if openwisp2fw_base_recompile == true
-- include: 2-openwrt.yml
-  tags: [openwisp2fw, openwrt]
-  when: openwisp2fw_base_recompile
+# or if openwisp2fw_source_recompile == true
+- include: 2-compile.yml
+  tags: [openwisp2fw, compile]
+  when: openwisp2fw_source_recompile
 
 # prepare ImageGenerator directory and files
 # but do not compile images yet
 - include: 3-generator.yml
   tags: [openwisp2fw, generator]
 
-# compile images for each organization and flavour
+# build images for each organization and flavour
 # store binaries in versioned directories
-- include: 4-make.yml
-  tags: [openwisp2fw, make]
+- include: 4-build.yml
+  tags: [openwisp2fw, build]
