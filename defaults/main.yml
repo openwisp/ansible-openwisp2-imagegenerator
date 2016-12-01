@@ -1,3 +1,4 @@
+# variables holding extra parameters
 openwisp2fw_source_recompile: "{{ recompile|default(false) }}"
 openwisp2fw_source_cores: "{{ cores|default(1) }}"
 # ssl library
@@ -66,6 +67,7 @@ openwisp2fw_source_additional_packages:
     - kmod-via-velocity
     - kmod-button-hotplug
     - partx-utils
+# other arbitrary configurations added in the OpenWRT/LEDE .config file
 openwisp2fw_source_other_configs:
     - CONFIG_BUSYBOX_CUSTOM=y
     - CONFIG_BUSYBOX_CONFIG_FEATURE_EDITING_SAVEHISTORY=y
@@ -74,9 +76,11 @@ openwisp2fw_source_other_configs:
     - CONFIG_BUSYBOX_CONFIG_FEATURE_VI_UNDO=y
     # workaround to avoid conflicts between wpad and wpad-mini
     - "# CONFIG_PACKAGE_wpad-mini is not set"
+# supported architectures
 openwisp2fw_source_archs:
     - ar71xx
     - x86
+# image flavours (see README to know what a flavour is)
 openwisp2fw_image_flavours:
     standard:
       ar71xx:
@@ -85,6 +89,7 @@ openwisp2fw_image_flavours:
       x86:
         profile: Generic
         packages: "{{ openwisp2fw_default_packages }}"
+# convenience variable used in openwisp2fw_image_flavours
 openwisp2fw_default_packages:
     # these packages will be removed
     - -iptables
@@ -105,6 +110,7 @@ openwisp2fw_default_packages:
     - libustream-{{ openwisp2fw_ssl_lib }}
     - openvpn-{{ openwisp2fw_ssl_lib }}
     - openwisp-config-{{ openwisp2fw_ssl_lib }}
+# default unmanaged list for openwisp-config
 openwisp2fw_default_unmanaged:
     - system.@led
     - network.loopback
