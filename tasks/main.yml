@@ -6,6 +6,8 @@
     - openwisp2fw_generator_dir
     - openwisp2fw_bin_dir
     - openwisp2fw_organizations
+  # this task must be always executed
+  tags: [openwisp2fw, install, compile, generator, build]
 
 # install system dependencies
 - include: 1-apt.yml
