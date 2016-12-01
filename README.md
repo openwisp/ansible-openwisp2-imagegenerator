@@ -15,6 +15,19 @@ Required variables:
     openwisp2fw_source_dir: /home/user/openwisp2-firmware-source
     openwisp2fw_generator_dir: /home/user/openwisp2-firmware-generator
     openwisp2fw_bin_dir: /home/user/openwisp2-firmware-builds
+    openwisp2fw_organizations:
+        - name: snakeoil
+          flavours:
+            - standard
+          luci_openwisp:
+            username: "operator"
+            # "password" string encrypted
+            password: "$1$openwisp$iQpdG2IrO4lya98cODuUB/"
+            salt: "openwisp"
+          openwisp:
+            url: "https://my-openwisp2-instance.com"
+            secret: "my-openwisp2-secret"
+            unmanaged: "{{ openwisp2fw_default_unmanaged }}"
 ```
 
 Compilation process
