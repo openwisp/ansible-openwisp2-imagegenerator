@@ -93,7 +93,9 @@ openwisp2fw_default_packages:
     - -firewall
     - -odhcpd
     - -odhcp6c
+    - -wpad-mini
     # these packages will be added
+    - wpad
     - uhttpd
     - uhttpd-mod-ubus
     - px5g
