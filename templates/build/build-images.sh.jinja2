@@ -9,22 +9,27 @@ START_TIME=$(date +"%Y-%m-%d-%H%M%S")
         arch="{{ arch }}"
         org="{{ org.name }}"
         files_dir=$BASEDIR/files/$org
+        latest_link="$BINDIR/$org/latest"
+        versioned_dir="$BINDIR/$org/$START_TIME"
         cd $BASEDIR/$arch
         {% for flavour_string in org.flavours %}
             {% set flavour = openwisp2fw_image_flavours[flavour_string] %}
+
             {# build image for arch/org/flavour #}
+
             flavour="{{ flavour_string }}"
             profile="{{ flavour[arch].profile }}"
             packages="{{ ' '.join(flavour[arch].packages) }}"
-            bin_dir="$BINDIR/$org/$flavour/$START_TIME"
-            latest_path="$BINDIR/$org/$flavour/latest"
+            bin_dir="$versioned_dir/$arch/$flavour"
             echo "==================================="
             echo "$arch / $org / $flavour"
             make image PROFILE="$profile" \
                        PACKAGES="$packages" \
                        FILES="$files_dir" \
                        BIN_DIR="$bin_dir"
+
             {# detect failures #}
+
             exit_code=$?
             if [ "$exit_code" != "0" ]; then
                 echo "FAILED: PROFILE=\"$profile\" PACKAGES=\"$packages\" FILES=\"$files_dir\" BIN_DIR=\"$bin_dir\""
@@ -32,11 +37,12 @@ START_TIME=$(date +"%Y-%m-%d-%H%M%S")
                 exit 1
             fi
         {% endfor %}
-        {# link to latest compilation for convenience #}
-        if [ -s $latest_path ]; then
-            rm $latest_path
-        fi
-        ln -s $bin_dir $latest_path
 
+        {# link to latest compilation for convenience #}
+
+        if [ -s $latest_link ]; then
+            rm $latest_link
+        fi
+        ln -s $versioned_dir $latest_link
     {% endfor %}
 {% endfor %}
