@@ -1,6 +1,7 @@
 openwisp2fw_source_recompile: "{{ recompile|default(false) }}"
 openwisp2fw_source_cores: "{{ cores|default(1) }}"
-openwisp2fw_openssl_lib: polarssl
+# ssl library
+openwisp2fw_ssl_lib: polarssl
 # apt packages needed for compilation
 openwisp2fw_apt_make_dependencies:
     - build-essential
@@ -41,9 +42,9 @@ openwisp2fw_source_feeds:
 # the following packages will be compiled and added
 # to all the firmware images by default
 openwisp2fw_source_default_packages:
-    - openwisp-config-{{ openwisp2fw_openssl_lib }}
-    - luci-openwisp-{{ openwisp2fw_openssl_lib }}
-    - openvpn-{{ openwisp2fw_openssl_lib }}
+    - openwisp-config-{{ openwisp2fw_ssl_lib }}
+    - luci-openwisp-{{ openwisp2fw_ssl_lib }}
+    - openvpn-{{ openwisp2fw_ssl_lib }}
 # the following packages are compiled for convenience
 # so they can be added by using playbook variables if needed
 openwisp2fw_source_additional_packages:
@@ -101,9 +102,9 @@ openwisp2fw_default_packages:
     - px5g
     - luci-theme-openwisp
     - luci-mod-openwisp
-    - libustream-{{ openwisp2fw_openssl_lib }}
-    - openvpn-{{ openwisp2fw_openssl_lib }}
-    - openwisp-config-{{ openwisp2fw_openssl_lib }}
+    - libustream-{{ openwisp2fw_ssl_lib }}
+    - openvpn-{{ openwisp2fw_ssl_lib }}
+    - openwisp-config-{{ openwisp2fw_ssl_lib }}
 openwisp2fw_default_unmanaged:
     - system.@led
     - network.loopback
