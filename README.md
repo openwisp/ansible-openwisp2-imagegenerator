@@ -17,7 +17,7 @@ The following variables are required:
 * `openwisp2fw_source_dir`: indicates the directory of the OpenWRT/LEDE source that is used during [compilation](#2-compilation)
 * `openwisp2fw_generator_dir`: indicates the directory used for the [preparation of generators](#3-preparation-of-generators)
 * `openwisp2fw_bin_dir`: indicates the directory used when [building the final images](#4-building-of-final-images)
-* `openwisp2fw_organizations`: a list of organizations; see the example `playbook.yml` file in the [Create playbook section](#create-playbook-file) to understand its structure
+* `openwisp2fw_organizations`: a list of organizations; see the example `playbook.yml` file in the [create playbook section](#5-create-playbook-file) to understand its structure
 
 Usage (tutorial)
 ================
@@ -36,8 +36,7 @@ Ansible is a configuration management tool that works by entering production ser
 **so you need to install it and configure it on the machine where you launch the deployment** and
 this machine must be able to SSH into the production server.
 
-Install ansible
----------------
+### 1. Install ansible
 
 Install ansible **on your local machine** (not the production server!) if you haven't done already, there are various ways in which you can do this, but we prefer to use the official python package
 manager, eg:
@@ -51,16 +50,14 @@ on the pip documentation website.
 is fine too, just make sure to install a version of the `2.0.x` series (which is the version with
 which we have tested this playbook).
 
-Install this role
------------------
+### 2. Install this role
 
 For the sake of simplicity, the easiest thing is to install this role **on your local machine**
 via `ansible-galaxy` (which was installed when installing ansible), therefore run:
 
     sudo ansible-galaxy install openwisp.openwisp2-imagegenerator
 
-Choose a working directory
---------------------------
+### 3. Choose a working directory
 
 Choose a working directory **on your local machine** where to put the configuration of
 your firmware images.
@@ -74,8 +71,7 @@ Putting this working directory under version control is also a very good idea, i
 you to track change, rollback, set up a CI server to automatically build the images for you
 and so on.
 
-Create inventory file
----------------------
+### 4. Create inventory file
 
 The inventory file is where group of servers are defined. In our simple case we can
 get away with defining a group in which we will put just one server.
@@ -89,8 +85,7 @@ Substitute `mycompiler.mydomain.com` with your hostname (ip addresses are allowe
 
 Also put your SSH user and password respectively in place of `<youruser>` and `<sudo-password>`. These credentials are used during the [Installation of dependencies step](#1-installation-of-dependencies).
 
-Create playbook file
---------------------
+### 5. Create playbook file
 
 Create a new playbook file `playbook.yml` **on your local machine** with the following contents:
 
@@ -132,8 +127,7 @@ At this stage your directory layout should look like the following:
 └── playbook.yml
 ```
 
-Run the playbook
-----------------
+### 6. Run the playbook
 
 Now is time to **start the compilation of OpenWISP2 Firmware**.
 
@@ -154,7 +148,7 @@ a directory layout like the following:
 ```
 
 Now, if you followed this tutorial and everything worked out, you are ready to customize
-your configuration to suit your needs.
+your configuration to suit your needs! Read on to find out how to accomplish this.
 
 Role variables
 ==============
@@ -163,6 +157,33 @@ There are many variables that can be customized if needed, take a look at
 [the defaults](https://github.com/openwisp/ansible-openwisp2-imagegenerator/blob/master/defaults/main.yml) for a comprehensive list.
 
 Some of those variables are also explained in [Organizations](#organizations) and [Flavours](#flavours).
+
+Organizations
+=============
+
+If you are working with OpenWISP, there are chances you may be compiling images for different groups of people: for-profit clients, no-profit organizations or any group of people that can
+be defined as an "*organization*".
+
+Organizations can be defined freely in `openwisp2fw_organizations`.
+
+For an example of how to do this, refer to the "[example playbook.yml file](#5-create-playbook-file)".
+
+If you need to add specific files in the filesystem tree of the images of each organization, see "[Adding files for specific organizations](#adding-files-for-specific-organizations)".
+
+Flavours
+========
+
+A flavour is a combination of packages that are included in an image.
+
+You may want to create different flavours for your images, for example:
+
+* `standard`: the most common use case
+* `minimal`: an image for device which have little storage space available
+* `mesh`: an image with packages that are needed for implementing a mesh network
+
+By default only a `standard` flavour is available.
+
+You can define your own flavours by setting `openwisp2fw_image_flavours` - take a look at [the default variables](https://github.com/openwisp/ansible-openwisp2-imagegenerator/blob/master/defaults/main.yml) to undetstand its structure.
 
 Build process
 =============
@@ -220,33 +241,6 @@ For example, if you choose to use 2 architectures (ar71xx and x86), 2 organizati
 The images will be created in the directory specified in
 `openwisp2fw_bin_dir`.
 
-Organizations
-=============
-
-If you are working with OpenWISP, there are chances you may be compiling images for different groups of people: for-profit clients, no-profit organizations or any group of people that can
-be defined as an "*organization*".
-
-Organizations can be defined freely in `openwisp2fw_organizations`.
-
-For an example of how to do this, refer to the "[Required role variables](#required-role-variables)" section.
-
-If you need to add specific files in the filesystem tree of the images of each organization, see "[Adding files for specific organizations](#adding-files-for-specific-organizations)".
-
-Flavours
-========
-
-A flavour is a combination of packages that are included in an image.
-
-You may want to create different flavours for your images, for example:
-
-* `standard`: the most common use case
-* `minimal`: an image for device which have little storage space available
-* `mesh`: an image with packages that are needed for implementing a mesh network
-
-By default only a `standard` flavour is available.
-
-You can define your own flavours by setting `openwisp2fw_image_flavours` - take a look at [the default variables](https://github.com/openwisp/ansible-openwisp2-imagegenerator/blob/master/defaults/main.yml) to undetstand its structure.
-
 Adding files to images
 ======================
 
@@ -264,7 +258,7 @@ Example:
 `files/etc/profile` will be added in every generated image.
 
 Adding files for specific organizations
-======================================-
+=======================================
 
 You can add files to images of specific organizations too.
 
