@@ -3,11 +3,13 @@ ansible-openwisp2-imagegenerator
 
 [![Galaxy](http://img.shields.io/badge/galaxy-openwisp.openwisp2--imagegenerator-blue.svg?style=flat-square)](https://galaxy.ansible.com/openwisp/openwisp2-imagegenerator/)
 
-This ansible role allows to build several openwisp2 firmware images for different organizations while keeping track of their configurations.
+This ansible role allows to build several openwisp2 firmware images for different organizations while
+keeping track of their configurations.
 
 **NOTE**: this role has not been tested in the wild yet.
-If you intend to use it, try it out and if something goes wrong please proceed to report your issue, but bear in mind you need to be willing
-to understand the [build process](#build-process) and it's inner working in order to make it work for you.
+If you intend to use it, try it out and if something goes wrong please proceed to report your issue,
+but bear in mind you need to be willing to understand the [build process](#build-process)
+and it's inner working in order to make it work for you.
 
 Required role variables
 =======================
@@ -17,7 +19,8 @@ The following variables are required:
 * `openwisp2fw_source_dir`: indicates the directory of the OpenWRT/LEDE source that is used during [compilation](#2-compilation)
 * `openwisp2fw_generator_dir`: indicates the directory used for the [preparation of generators](#3-preparation-of-generators)
 * `openwisp2fw_bin_dir`: indicates the directory used when [building the final images](#4-building-of-final-images)
-* `openwisp2fw_organizations`: a list of organizations; see the example `playbook.yml` file in the [create playbook section](#5-create-playbook-file) to understand its structure
+* `openwisp2fw_organizations`: a list of organizations; see the example `playbook.yml` file in the
+  [create playbook section](#5-create-playbook-file) to understand its structure
 
 Usage (tutorial)
 ================
@@ -29,17 +32,16 @@ If you already know how to use ansible, you can skip this section and jump strai
 
 First of all you need to understand two key concepts:
 
-* for **"production server"** we mean a server (**not a laptop or a desktop computer!**) with public ipv4 / ipv6 which is used to compile the images
-* for **"local machine"** we mean the host from which you launch ansible, eg: your own laptop
+* for **"compilation server"** we mean a server which is used to compile the images
+* for **"local machine"** we mean the host from which you launch ansible, eg: your own laptop or CI server
 
-Ansible is a configuration management tool that works by entering production servers via SSH,
-**so you need to install it and configure it on the machine where you launch the deployment** and
-this machine must be able to SSH into the production server.
+Ansible is a configuration management/automation tool that works by entering the compilation server
+via SSH and executing a series of commands.
 
 ### 1. Install ansible
 
-Install ansible **on your local machine** (not the production server!) if you haven't done already, there are various ways in which you can do this, but we prefer to use the official python package
-manager, eg:
+Install ansible **on your local machine** if you haven't done already, there are various ways
+in which you can do this, but we prefer to use the official python package manager, eg:
 
     sudo pip install ansible
 
@@ -67,14 +69,13 @@ Eg:
     mkdir ~/my-openwisp2-firmware-conf
     cd ~/my-openwisp2-firmware-conf
 
-Putting this working directory under version control is also a very good idea, it will help
-you to track change, rollback, set up a CI server to automatically build the images for you
-and so on.
+Putting this working directory under version control is also a very good idea, it will help you to
+track change, rollback, set up a CI server to automatically build the images for you and so on.
 
 ### 4. Create inventory file
 
-The inventory file is where group of servers are defined. In our simple case we can
-get away with defining a group in which we will put just one server.
+The inventory file is where group of servers are defined. In our simple case we can get away with
+defining a group in which we will put just one server.
 
 Create a new file `hosts` **on your local machine** with the following contents:
 
@@ -83,7 +84,8 @@ Create a new file `hosts` **on your local machine** with the following contents:
 
 Substitute `mycompiler.mydomain.com` with your hostname (ip addresses are allowed as well).
 
-Also put your SSH user and password respectively in place of `<youruser>` and `<sudo-password>`. These credentials are used during the [Installation of dependencies step](#1-installation-of-dependencies).
+Also put your SSH user and password respectively in place of `<youruser>` and `<sudo-password>`.
+These credentials are used during the [Installation of dependencies step](#1-installation-of-dependencies).
 
 ### 5. Create playbook file
 
@@ -117,7 +119,9 @@ Create a new playbook file `playbook.yml` **on your local machine** with the fol
           root_password: "$1$8YoE5Fl2$N49pL.Pa.6/fZ/E/f/afw/"  # encrypted version of "myPassword"
 ```
 
-This playbook will let you compile firmware images for an organization named `snakeoil` using only the `standard` flavour (which includes a default OpenWRT image with the standard OpenWISP2 modules) for two architectures, ar71xx and x86.
+This playbook will let you compile firmware images for an organization named `snakeoil` using only
+the `standard` flavour (which includes a default OpenWRT image with the standard OpenWISP2 modules)
+for two architectures, ar71xx and x86.
 
 See the section [Role Variables](#role-variables) to know how to customize the available configurations.
 
@@ -137,9 +141,9 @@ Run the playbook **on your local machine** with:
 
     ansible-playbook -i hosts playbook.yml
 
-When the playbook is done running you will find the images in the directory specified in
-`openwisp2fw_bin_dir`, which in our example is `/home/user/openwisp2-firmware-builds` with
-a directory layout like the following:
+When the playbook is done running you will find the images on **the compilation server** located in
+the directory specified in `openwisp2fw_bin_dir`, which in our example is
+`/home/user/openwisp2-firmware-builds` with a directory layout like the following:
 
 ```
 /home/user/openwisp2-firmware-builds
@@ -149,28 +153,31 @@ a directory layout like the following:
 └── snakeoil/latest/                               # (latest is a symbolic link to the last compilation)
 ```
 
-Now, if you followed this tutorial and everything worked out, you are ready to customize
-your configuration to suit your needs! Read on to find out how to accomplish this.
+Now, if you followed this tutorial and everything worked out, you are ready to customize your
+configuration to suit your needs! Read on to find out how to accomplish this.
 
 Role variables
 ==============
 
 There are many variables that can be customized if needed, take a look at
-[the defaults](https://github.com/openwisp/ansible-openwisp2-imagegenerator/blob/master/defaults/main.yml) for a comprehensive list.
+[the defaults](https://github.com/openwisp/ansible-openwisp2-imagegenerator/blob/master/defaults/main.yml)
+for a comprehensive list.
 
 Some of those variables are also explained in [Organizations](#organizations) and [Flavours](#flavours).
 
 Organizations
 =============
 
-If you are working with OpenWISP, there are chances you may be compiling images for different groups of people: for-profit clients, no-profit organizations or any group of people that can
+If you are working with OpenWISP, there are chances you may be compiling images for different groups
+of people: for-profit clients, no-profit organizations or any group of people that can
 be defined as an "*organization*".
 
 Organizations can be defined freely in `openwisp2fw_organizations`.
 
 For an example of how to do this, refer to the "[example playbook.yml file](#5-create-playbook-file)".
 
-If you need to add specific files in the filesystem tree of the images of each organization, see "[Adding files for specific organizations](#adding-files-for-specific-organizations)".
+If you need to add specific files in the filesystem tree of the images of each organization, see
+"[Adding files for specific organizations](#adding-files-for-specific-organizations)".
 
 Flavours
 ========
@@ -185,7 +192,9 @@ You may want to create different flavours for your images, for example:
 
 By default only a `standard` flavour is available.
 
-You can define your own flavours by setting `openwisp2fw_image_flavours` - take a look at [the default variables](https://github.com/openwisp/ansible-openwisp2-imagegenerator/blob/master/defaults/main.yml) to undetstand its structure.
+You can define your own flavours by setting `openwisp2fw_image_flavours` - take a look at
+[the default variables](https://github.com/openwisp/ansible-openwisp2-imagegenerator/blob/master/defaults/main.yml)
+to undetstand its structure.
 
 Build process
 =============
@@ -204,7 +213,8 @@ In this phase the operating system dependencies needed for the subsequent steps 
 
 The OpenWRT/LEDE source is compiled in order to produce something
 called "[Image Generator](https://wiki.openwrt.org/doc/howto/obtain.firmware.generate)".
-The *image generator* is an archive that contains the precompiled packages and a special `Makefile` that will be used to generate the customized images for each organization.
+The *image generator* is an archive that contains the precompiled packages and a special
+`Makefile` that will be used to generate the customized images for each organization.
 
 The source is downloaded and compiled in the directory specified in
 `openwisp2fw_source_dir`.
@@ -214,7 +224,8 @@ The source is downloaded and compiled in the directory specified in
 **tag**: `generator`
 
 During this step the *image generators* are extracted and prepared
-for building different images for different [organizations](#organizations), each organization can build images for different [flavours](#flavours) (eg: full-featured, minimal, mesh, ecc);
+for building different images for different [organizations](#organizations), each organization
+can build images for different [flavours](#flavours) (eg: full-featured, minimal, mesh, ecc);
 
 The images are extracted and prepared in the directory specified in
 `openwisp2fw_generator_dir`.
@@ -225,11 +236,12 @@ The images are extracted and prepared in the directory specified in
 
 In this phase a series of images is produced.
 
-Several images will be built for each architecture, organization and flavour. This can generate quite a lof of files, therefore use this
-power with caution: it's probably better to start with fewer options
-and add more cases as you go ahead.
+Several images will be built for each architecture, organization and flavour.
+This can generate quite a lof of files, therefore use this power with caution: it's probably
+better to start with fewer options and add more cases as you go ahead.
 
-For example, if you choose to use 2 architectures (ar71xx and x86), 2 organizations (eg: A and B) and 2 flavours (eg: standard and mini), you will get 8 groups of images:
+For example, if you choose to use 2 architectures (ar71xx and x86), 2 organizations (eg: A and B)
+and 2 flavours (eg: standard and mini), you will get 8 groups of images:
 
 * **organization**: A / **flavour**: standard / **arch**: ar71xx
 * **organization**: A / **flavour**: standard / **arch**: x86
@@ -246,7 +258,8 @@ The images will be created in the directory specified in
 Adding files to images
 ======================
 
-You can add arbitrary files in every generated image by placing these files in a directory named `files/` in your playbook directory.
+You can add arbitrary files in every generated image by placing these files in a directory named
+`files/` in your playbook directory.
 
 Example:
 
@@ -264,7 +277,8 @@ Adding files for specific organizations
 
 You can add files to images of specific organizations too.
 
-Let's say you have an organization called `snakeoil` and you want to add a custom banner, you can accomplish this by creating the following directory structure:
+Let's say you have an organization called `snakeoil` and you want to add a custom banner,
+you can accomplish this by creating the following directory structure:
 
 ```
 .
