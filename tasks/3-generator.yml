@@ -73,6 +73,14 @@
   with_items: "{{ openwisp2fw_organizations }}"
   when: item.luci_openwisp
 
+- name: /etc/shadow
+  template:
+    dest: "{{ openwisp2fw_generator_dir }}/files/{{ item.name }}/etc/shadow"
+    src: generator/shadow.jinja2
+    mode: 0600
+  with_items: "{{ openwisp2fw_organizations }}"
+  when: item.root_password
+
 # the following task loops over each organization and checks whether
 # <playbook-dir>/organizations/<organization-name>/ exists
 # and stores the result of this check in a variable

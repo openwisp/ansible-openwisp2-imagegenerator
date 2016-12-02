@@ -103,16 +103,18 @@ Create a new playbook file `playbook.yml` **on your local machine** with the fol
           flavours: # supported flavours
             - standard
           luci_openwisp: # /etc/config/luci_openwisp
+            # other config keys can be added freely
             username: "operator"
             # "password" string encrypted
             password: "$1$openwisp$iQpdG2IrO4lya98cODuUB/"
             salt: "openwisp"
-            # other config keys can be added freely
           openwisp: # /etc/config/openwisp
+            # other config keys can be added freely
             url: "https://my-openwisp2-instance.com"
             secret: "my-openwisp2-secret"
             unmanaged: "{{ openwisp2fw_default_unmanaged }}"
-            # other config keys can be added freely
+          # encrypted password that will be put in /etc/shadow
+          root_password: "$1$8YoE5Fl2$N49pL.Pa.6/fZ/E/f/afw/"  # encrypted version of "myPassword"
 ```
 
 This playbook will let you compile firmware images for an organization named `snakeoil` using only the `standard` flavour (which includes a default OpenWRT image with the standard OpenWISP2 modules) for two architectures, ar71xx and x86.
