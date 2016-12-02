@@ -3,8 +3,6 @@ ARCHS="{{ ' '.join(openwisp2fw_source_archs) }}"
 BASEDIR="{{ openwisp2fw_generator_dir }}"
 BINDIR="{{ openwisp2fw_bin_dir }}"
 START_TIME=$(date +"%Y-%m-%d-%H%M%S")
-VERSIONED_DIR="$BINDIR/$START_TIME"
-LATEST_LINK="$BINDIR/latest"
 
 {% for arch in openwisp2fw_source_archs %}
     {% for org in openwisp2fw_organizations %}
@@ -12,6 +10,8 @@ LATEST_LINK="$BINDIR/latest"
         arch="{{ arch }}"
         org="{{ org.name }}"
         files_dir=$BASEDIR/files/$org
+        versioned_dir="$BINDIR/$org/$START_TIME"
+        latest_link="$BINDIR/$org/latest"
         cd $BASEDIR/$arch
         {% for flavour_string in org.flavours %}
             {% set flavour = openwisp2fw_image_flavours[flavour_string] %}
@@ -21,7 +21,7 @@ LATEST_LINK="$BINDIR/latest"
             flavour="{{ flavour_string }}"
             profile="{{ flavour[arch].profile }}"
             packages="{{ ' '.join(flavour[arch].packages) }}"
-            bin_dir="$VERSIONED_DIR/$org/$arch/$flavour"
+            bin_dir="$versioned_dir/$arch/$flavour"
             echo "==================================="
             echo "$arch / $org / $flavour"
             make image PROFILE="$profile" \
@@ -38,11 +38,12 @@ LATEST_LINK="$BINDIR/latest"
                 exit 1
             fi
         {% endfor %}
+
+        {# link (each org) to latest compilation for convenience #}
+
+        if [ -s $latest_link ]; then
+            rm $latest_link
+        fi
+        ln -s $versioned_dir $latest_link
     {% endfor %}
 {% endfor %}
-
-{# link to latest compilation for convenience #}
-if [ -s $LATEST_LINK ]; then
-    rm $LATEST_LINK
-fi
-ln -s $VERSIONED_DIR $LATEST_LINK
