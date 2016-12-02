@@ -10,14 +10,89 @@ If you intend to use it, try it out and if something goes wrong please proceed t
 to understand the [build process](#build-process) and it's inner working in order to make it work for you.
 
 Required role variables
------------------------
+=======================
 
 The following variables are required:
 
 * `openwisp2fw_source_dir`: indicates the directory of the OpenWRT/LEDE source that is used during [compilation](#2-compilation)
 * `openwisp2fw_generator_dir`: indicates the directory used for the [preparation of generators](#3-preparation-of-generators)
 * `openwisp2fw_bin_dir`: indicates the directory used when [building the final images](#4-building-of-final-images)
-* `openwisp2fw_organizations`: a list of organizations; see the example below to understand its structure
+* `openwisp2fw_organizations`: a list of organizations; see the example `playbook.yml` file in the [Create playbook section](#create-playbook-file) to understand its structure
+
+Usage (tutorial)
+================
+
+If you don't know how to use ansible, don't panic, this procedure will guide you step by step.
+
+If you already know how to use ansible, you can skip this section and jump straight to the
+"Install this role" section.
+
+First of all you need to understand two key concepts:
+
+* for **"production server"** we mean a server (**not a laptop or a desktop computer!**) with public ipv4 / ipv6 which is used to compile the images
+* for **"local machine"** we mean the host from which you launch ansible, eg: your own laptop
+
+Ansible is a configuration management tool that works by entering production servers via SSH,
+**so you need to install it and configure it on the machine where you launch the deployment** and
+this machine must be able to SSH into the production server.
+
+Install ansible
+---------------
+
+Install ansible **on your local machine** (not the production server!) if you haven't done already, there are various ways in which you can do this, but we prefer to use the official python package
+manager, eg:
+
+    sudo pip install ansible
+
+If you don't have pip installed see [Installing pip](https://pip.pypa.io/en/stable/installing/)
+on the pip documentation website.
+
+[Installing ansible in other ways](http://docs.ansible.com/ansible/intro_installation.html#latest-release-via-yum)
+is fine too, just make sure to install a version of the `2.0.x` series (which is the version with
+which we have tested this playbook).
+
+Install this role
+-----------------
+
+For the sake of simplicity, the easiest thing is to install this role **on your local machine**
+via `ansible-galaxy` (which was installed when installing ansible), therefore run:
+
+    sudo ansible-galaxy install openwisp.openwisp2-imagegenerator
+
+Choose a working directory
+--------------------------
+
+Choose a working directory **on your local machine** where to put the configuration of
+your firmware images.
+
+Eg:
+
+    mkdir ~/my-openwisp2-firmware-conf
+    cd ~/my-openwisp2-firmware-conf
+
+Putting this working directory under version control is also a very good idea, it will help
+you to track change, rollback, set up a CI server to automatically build the images for you
+and so on.
+
+Create inventory file
+---------------------
+
+The inventory file is where group of servers are defined. In our simple case we can
+get away with defining a group in which we will put just one server.
+
+Create a new file `hosts` **on your local machine** with the following contents:
+
+    [myserver]
+    mycompiler.mydomain.com ansible_user=<youruser> ansible_become_pass=<sudo-password>
+
+Substitute `mycompiler.mydomain.com` with your hostname (ip addresses are allowed as well).
+
+Also put your SSH user and password respectively in place of `<youruser>` and `<sudo-password>`. These credentials are used during the [Installation of dependencies step](#1-installation-of-dependencies).
+
+Create playbook file
+--------------------
+
+Create a new playbook file `playbook.yml` **on your local machine** with the following contents:
 
 ```yaml
 # playbook.yml
@@ -45,16 +120,52 @@ The following variables are required:
             # other config keys can be added freely
 ```
 
-Other role variables
---------------------
+This playbook will let you compile firmware images for an organization named `snakeoil` using only the `standard` flavour (which includes a default OpenWRT image with the standard OpenWISP2 modules) for two architectures, ar71xx and x86.
 
-There are many variables that can be customized if needed,
-take a look at [the defaults](https://github.com/openwisp/ansible-openwisp2-imagegenerator/blob/master/defaults/main.yml) for a comprehensive list.
+See the section [Role Variables](#role-variables) to know how to customize the available configurations.
+
+At this stage your directory layout should look like the following:
+
+```
+.
+├── hosts
+└── playbook.yml
+```
+
+Run the playbook
+----------------
+
+Now is time to **start the compilation of OpenWISP2 Firmware**.
+
+Run the playbook **on your local machine** with:
+
+    ansible-playbook -i hosts playbook.yml
+
+When the playbook is done running you will find the images in the directory specified in
+`openwisp2fw_bin_dir`, which in our example is `/home/user/openwisp2-firmware-builds` with
+a directory layout like the following:
+
+```
+/home/user/openwisp2-firmware-builds
+├── snakeoil/                                      # (each org has its own dir)
+├── snakeoil/2016-12-02-094316/ar71xx/standard/    # (contains ar71xx images for standard flavour)
+├── snakeoil/2016-12-02-094316/x86/standard/       # (contains x86 images for standard flavour)
+└── snakeoil/latest/                               # (latest is a symbolic link to the last compilation)
+```
+
+Now, if you followed this tutorial and everything worked out, you are ready to customize
+your configuration to suit your needs.
+
+Role variables
+==============
+
+There are many variables that can be customized if needed, take a look at
+[the defaults](https://github.com/openwisp/ansible-openwisp2-imagegenerator/blob/master/defaults/main.yml) for a comprehensive list.
 
 Some of those variables are also explained in [Organizations](#organizations) and [Flavours](#flavours).
 
 Build process
--------------
+=============
 
 The build process is composed of the following steps.
 
@@ -110,7 +221,7 @@ The images will be created in the directory specified in
 `openwisp2fw_bin_dir`.
 
 Organizations
--------------
+=============
 
 If you are working with OpenWISP, there are chances you may be compiling images for different groups of people: for-profit clients, no-profit organizations or any group of people that can
 be defined as an "*organization*".
@@ -122,7 +233,7 @@ For an example of how to do this, refer to the "[Required role variables](#requi
 If you need to add specific files in the filesystem tree of the images of each organization, see "[Adding files for specific organizations](#adding-files-for-specific-organizations)".
 
 Flavours
---------
+========
 
 A flavour is a combination of packages that are included in an image.
 
@@ -134,10 +245,10 @@ You may want to create different flavours for your images, for example:
 
 By default only a `standard` flavour is available.
 
-You define your own flavours by tweaking `openwisp2fw_image_flavours` - take a look at [the default variables](https://github.com/openwisp/ansible-openwisp2-imagegenerator/blob/master/defaults/main.yml) to find out the default value of `openwisp2fw_image_flavours`.
+You can define your own flavours by setting `openwisp2fw_image_flavours` - take a look at [the default variables](https://github.com/openwisp/ansible-openwisp2-imagegenerator/blob/master/defaults/main.yml) to undetstand its structure.
 
 Adding files to images
-----------------------
+======================
 
 You can add arbitrary files in every generated image by placing these files in a directory named `files/` in your playbook directory.
 
@@ -153,7 +264,7 @@ Example:
 `files/etc/profile` will be added in every generated image.
 
 Adding files for specific organizations
----------------------------------------
+======================================-
 
 You can add files to images of specific organizations too.
 
@@ -171,7 +282,7 @@ the final images, you can use this feature to overwrite any file
 built automatically during the previous steps.
 
 Extra parameters
-----------------
+================
 
 You can pass the following extra parameters to `ansible-playbook`:
 
@@ -185,7 +296,7 @@ ansible-playbook -i hosts playbook.yml -e "recompile=1 cores=16"
 ```
 
 Run specific steps
-------------------
+==================
 
 Since each step in the process is tagged, you can run specific steps by using ansible tags.
 
