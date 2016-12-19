@@ -139,7 +139,9 @@ Now is time to **start the compilation of OpenWISP2 Firmware**.
 
 Run the playbook **on your local machine** with:
 
-    ansible-playbook -i hosts playbook.yml
+    ansible-playbook -i hosts playbook.yml -e "recompile=1 cores=4"
+
+You can substitute `cores=4` with the number of cores at your disposal.
 
 When the playbook is done running you will find the images on **the compilation server** located in
 the directory specified in `openwisp2fw_bin_dir`, which in our example is
