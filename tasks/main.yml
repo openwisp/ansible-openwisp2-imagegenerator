@@ -1,13 +1,8 @@
-# ensure required variables are defined
-- fail: msg="Required variable '{{ item }}' is not defined"
-  when: item not in vars
-  with_items:
-    - openwisp2fw_source_dir
-    - openwisp2fw_generator_dir
-    - openwisp2fw_bin_dir
-    - openwisp2fw_organizations
-  # this task must be always executed
-  tags: [openwisp2fw, install, compile, generator, build]
+# perform a check of prerequisites before proceding
+# "fail fast and early"
+- include: 0-check.yml
+  # these checks must be always executed
+  tags: [openwisp2fw, check, install, compile, generator, build]
 
 # install system dependencies
 - include: 1-apt.yml

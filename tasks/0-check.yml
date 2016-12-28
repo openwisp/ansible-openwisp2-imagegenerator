@@ -1,0 +1,39 @@
+# ensure required variables are defined
+- fail: msg="Required variable '{{ item }}' is not defined"
+  when: item not in vars
+  with_items:
+    - openwisp2fw_source_dir
+    - openwisp2fw_generator_dir
+    - openwisp2fw_bin_dir
+    - openwisp2fw_organizations
+
+# ensure directories used by the playbook exist
+- name: Ensure directories exist
+  file:
+    dest: "{{ item }}"
+    state: directory
+  with_items:
+    - "{{ openwisp2fw_source_dir }}"
+    - "{{ openwisp2fw_generator_dir }}"
+    - "{{ openwisp2fw_bin_dir }}"
+
+# ensure ansible user has write permissions in the directories it uses
+# this saves the annoiance of a "Permission Denied" error at the end of the process
+- name: Check write permissions
+  file:
+    dest: "{{ item }}/__test__"
+    state: touch
+  with_items:
+    - "{{ openwisp2fw_source_dir }}"
+    - "{{ openwisp2fw_generator_dir }}"
+    - "{{ openwisp2fw_bin_dir }}"
+
+# remove test file created in the previous task
+- name: Remove test file
+  file:
+    dest: "{{ item }}/__test__"
+    state: "absent"
+  with_items:
+    - "{{ openwisp2fw_source_dir }}"
+    - "{{ openwisp2fw_generator_dir }}"
+    - "{{ openwisp2fw_bin_dir }}"
