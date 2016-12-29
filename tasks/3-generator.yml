@@ -79,7 +79,7 @@
     src: generator/shadow.jinja2
     mode: 0600
   with_items: "{{ openwisp2fw_organizations }}"
-  when: item.root_password
+  when: item.root_password is defined
 
 # the following task loops over each organization and checks whether
 # <playbook-dir>/organizations/<organization-name>/ exists
