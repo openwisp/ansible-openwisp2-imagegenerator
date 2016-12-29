@@ -1,5 +1,5 @@
-# ensure required variables are defined
-- fail: msg="Required variable '{{ item }}' is not defined"
+- name: Ensure required variables are defined
+  fail: msg="Required variable '{{ item }}' is not defined"
   when: item not in vars
   with_items:
     - openwisp2fw_source_dir
@@ -7,8 +7,7 @@
     - openwisp2fw_bin_dir
     - openwisp2fw_organizations
 
-# ensure directories used by the playbook exist
-- name: Ensure directories exist
+- name: Ensure directories used by the playbook exist
   file:
     dest: "{{ item }}"
     state: directory
