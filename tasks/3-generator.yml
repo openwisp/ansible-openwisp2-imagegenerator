@@ -71,7 +71,7 @@
     dest: "{{ openwisp2fw_generator_dir }}/files/{{ item.name }}/etc/config/luci_openwisp"
     src: uci/luci_openwisp.jinja2
   with_items: "{{ openwisp2fw_organizations }}"
-  when: item.luci_openwisp
+  when: item.luci_openwisp is defined
 
 - name: /etc/shadow
   template:
