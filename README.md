@@ -113,7 +113,7 @@ Create a new playbook file `playbook.yml` **on your local machine** with the fol
           openwisp: # /etc/config/openwisp
             # other config keys can be added freely
             url: "https://my-openwisp2-instance.com"
-            secret: "my-openwisp2-secret"
+            shared_secret: "my-openwisp2-secret"
             unmanaged: "{{ openwisp2fw_default_unmanaged }}"
           # encrypted password that will be put in /etc/shadow
           root_password: "$1$8YoE5Fl2$N49pL.Pa.6/fZ/E/f/afw/"  # encrypted version of "myPassword"
