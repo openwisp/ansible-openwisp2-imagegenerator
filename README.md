@@ -323,3 +323,8 @@ Example 2, run only the preparation of generators and build steps:
 ```
 ansible-playbook -i hosts playbook.yml -t generator,build
 ```
+
+Support
+=======
+
+Send questions to the [OpenWISP Mailing List](https://groups.google.com/d/forum/openwisp).
