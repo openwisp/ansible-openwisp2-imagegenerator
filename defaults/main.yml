@@ -13,6 +13,7 @@ openwisp2fw_apt_make_dependencies:
     - libssl-dev
     - subversion
     - wget
+    - gawk
 # base OpenWRT or LEDE repository, defaults to official OpenWRT repo
 openwisp2fw_source_repo: https://github.com/openwrt/openwrt.git
 # base OpenWRT or LEDE version, defaults to HEAD (master git branch)
