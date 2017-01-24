@@ -14,9 +14,9 @@ START_TIME=$(date +"%Y-%m-%d-%H%M%S")
         latest_link="$BINDIR/$org/latest"
         cd $BASEDIR/$arch
         {% for flavour_string in org.flavours %}
-            {% set flavour = openwisp2fw_image_flavours[flavour_string] %}
-
             {# build image for arch/org/flavour #}
+            {% set flavour = openwisp2fw_image_flavours[flavour_string] %}
+            {% if flavour[arch] is defined %}
 
             flavour="{{ flavour_string }}"
             profile="{{ flavour[arch].profile }}"
@@ -37,6 +37,7 @@ START_TIME=$(date +"%Y-%m-%d-%H%M%S")
                 rm -rf $bin_dir
                 exit 1
             fi
+            {% endif %}
         {% endfor %}
 
         {# link (each org) to latest compilation for convenience #}
