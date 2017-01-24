@@ -48,7 +48,9 @@
 
 # the following task checks whether <playbook-dir>/files/ exists
 # and stores the result of this check in a variable
-- local_action: stat path={{ playbook_dir }}/files
+- name: check local /files dir
+  local_action: stat path={{ playbook_dir }}/files
+  become: false
   register: file_dir
 
 # perform action only if playbook_dir contains a file directory
@@ -84,7 +86,9 @@
 # the following task loops over each organization and checks whether
 # <playbook-dir>/organizations/<organization-name>/ exists
 # and stores the result of this check in a variable
-- local_action: stat path={{ playbook_dir }}/organizations/{{ item.name }}
+- name: check local /organizations dir
+  local_action: stat path={{ playbook_dir }}/organizations/{{ item.name }}
+  become: false
   register: organization_dirs
   with_items: "{{ openwisp2fw_organizations }}"
 
