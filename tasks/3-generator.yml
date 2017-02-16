@@ -68,20 +68,38 @@
   with_items: "{{ openwisp2fw_organizations }}"
   when: item.openwisp is defined
 
+- name: Encrypt luci passwords
+  shell: "mkpasswd -5 {{ item.luci_openwisp.password }}"
+  args:
+    chdir: "{{ openwisp2fw_source_dir }}"
+  with_items: "{{ openwisp2fw_organizations }}"
+  register: encrypted_luci_passwords
+  when: item.luci_openwisp is defined and item.luci_openwisp.password is defined
+
 - name: /etc/config/luci_openwisp
   template:
-    dest: "{{ openwisp2fw_generator_dir }}/files/{{ item.name }}/etc/config/luci_openwisp"
+    dest: "{{ openwisp2fw_generator_dir }}/files/{{ item.item.name }}/etc/config/luci_openwisp"
     src: uci/luci_openwisp.jinja2
+  with_items: "{{ encrypted_luci_passwords.results }}"
+  # avoid failure if not using this feature
+  when: encrypted_luci_passwords is defined and encrypted_luci_passwords.results is defined and item.item.luci_openwisp.password
+
+- name: Encrypt root passwords
+  shell: "mkpasswd -5 {{ item.root_password }}"
+  args:
+    chdir: "{{ openwisp2fw_source_dir }}"
   with_items: "{{ openwisp2fw_organizations }}"
-  when: item.luci_openwisp is defined
+  register: encrypted_passwords
+  when: item.root_password is defined
 
 - name: /etc/shadow
   template:
-    dest: "{{ openwisp2fw_generator_dir }}/files/{{ item.name }}/etc/shadow"
+    dest: "{{ openwisp2fw_generator_dir }}/files/{{ item.item.name }}/etc/shadow"
     src: generator/shadow.jinja2
     mode: 0600
-  with_items: "{{ openwisp2fw_organizations }}"
-  when: item.root_password is defined
+  with_items: "{{ encrypted_passwords.results }}"
+  # avoid failure if not using this feature
+  when: encrypted_passwords is defined and encrypted_passwords.results is defined and item.item.root_password is defined
 
 # the following task loops over each organization and checks whether
 # <playbook-dir>/organizations/<organization-name>/ exists
