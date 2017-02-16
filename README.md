@@ -107,16 +107,15 @@ Create a new playbook file `playbook.yml` **on your local machine** with the fol
           luci_openwisp: # /etc/config/luci_openwisp
             # other config keys can be added freely
             username: "operator"
-            # "password" string encrypted
-            password: "$1$openwisp$iQpdG2IrO4lya98cODuUB/"
-            salt: "openwisp"
+            # clear text password that will be encrypted in /etc/config/luci_openwisp
+            password: "<CHANGE_ME>"
           openwisp: # /etc/config/openwisp
             # other config keys can be added freely
             url: "https://my-openwisp2-instance.com"
             shared_secret: "my-openwisp2-secret"
             unmanaged: "{{ openwisp2fw_default_unmanaged }}"
-          # encrypted password that will be put in /etc/shadow
-          root_password: "$1$8YoE5Fl2$N49pL.Pa.6/fZ/E/f/afw/"  # encrypted version of "myPassword"
+          # clear text password that will be encrypted in /etc/shadow
+          root_password: "<CHANGE_ME>"
 ```
 
 This playbook will let you compile firmware images for an organization named `snakeoil` using only
