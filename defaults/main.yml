@@ -79,18 +79,19 @@ openwisp2fw_source_other_configs:
     - CONFIG_BUSYBOX_CONFIG_FEATURE_VI_UNDO=y
     # workaround to avoid conflicts between wpad and wpad-mini
     - "# CONFIG_PACKAGE_wpad-mini is not set"
-# supported architectures
-openwisp2fw_source_archs:
-    - ar71xx
-    - x86
+openwisp2fw_source_targets:
+    - system: ar71xx
+      subtarget: generic
+      profile: Default
+    - system: x86
+      subtarget: generic
+      profile: Generic
 # image flavours (see README to know what a flavour is)
 openwisp2fw_image_flavours:
     standard:
       ar71xx:
-        profile: Default
         packages: "{{ openwisp2fw_default_packages }}"
       x86:
-        profile: Generic
         packages: "{{ openwisp2fw_default_packages }}"
 # convenience variable used in openwisp2fw_image_flavours
 openwisp2fw_default_packages:

@@ -11,28 +11,37 @@
 - name: Create find scripts on server
   template:
     src: generator/find.sh.jinja2
-    dest: "{{ openwisp2fw_source_dir }}/find-{{ item }}.sh"
+    dest: "{{ openwisp2fw_source_dir }}/find-{{ item.system }}-{{ item.subtarget }}.sh"
     mode: 0755
-  with_items: "{{ openwisp2fw_source_archs }}"
+  with_items: "{{ openwisp2fw_source_targets }}"
 
 - name: Call find scripts
-  shell: ./find-{{ item }}.sh chdir={{ openwisp2fw_source_dir }}
-  with_items: "{{ openwisp2fw_source_archs }}"
+  shell: "{{ openwisp2fw_source_dir }}/find-{{ item.system }}-{{ item.subtarget }}.sh"
+  args:
+    chdir: "{{ openwisp2fw_source_dir }}"
+    creates: "{{ openwisp2fw_generator_dir }}/{{ item.system }}-{{ item.subtarget }}.gz"
+  with_items: "{{ openwisp2fw_source_targets }}"
 
 - name: Extract copies of imagebuilder archives
   unarchive:
     copy: false
-    src: "{{ openwisp2fw_generator_dir }}/{{ item }}.gz"
+    src: "{{ openwisp2fw_generator_dir }}/{{ item.system }}-{{ item.subtarget }}.gz"
     dest: "{{ openwisp2fw_generator_dir }}"
-  with_items: "{{ openwisp2fw_source_archs }}"
+    creates: "{{ openwisp2fw_generator_dir }}/.archive-{{ item.system }}-{{ item.subtarget }}-created"
+  with_items: "{{ openwisp2fw_source_targets }}"
 
 - name: Remove copies of imagebuilder archives
-  shell: "rm {{ openwisp2fw_generator_dir }}/{{ item }}.gz"
-  with_items: "{{ openwisp2fw_source_archs }}"
+  file:
+    dest: "{{ openwisp2fw_generator_dir }}/{{ item.system }}-{{ item.subtarget }}.gz"
+    state: absent
+  with_items: "{{ openwisp2fw_source_targets }}"
 
-- name: Rename ImageBuilder dirs to just the name of their corresponding arch
-  shell: "mv {{ openwisp2fw_generator_dir }}/*-{{ item }}-* {{ openwisp2fw_generator_dir }}/{{ item }}"
-  with_items: "{{ openwisp2fw_source_archs }}"
+- name: Rename ImageBuilder dirs to just the name of their corresponding target system
+  shell: "mv *-{{ item.system }}-{{ item.subtarget }}* {{ item.system }}-{{ item.subtarget }}"
+  args:
+    chdir: "{{ openwisp2fw_generator_dir }}"
+    creates: "{{ openwisp2fw_generator_dir }}/{{ item.system }}-{{ item.subtarget }}"
+  with_items: "{{ openwisp2fw_source_targets }}"
 
 - name: Create a "files" directory for each organization
   file:

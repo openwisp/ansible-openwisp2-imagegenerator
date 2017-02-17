@@ -100,6 +100,13 @@ Create a new playbook file `playbook.yml` **on your local machine** with the fol
     openwisp2fw_source_dir: /home/user/openwisp2-firmware-source
     openwisp2fw_generator_dir: /home/user/openwisp2-firmware-generator
     openwisp2fw_bin_dir: /home/user/openwisp2-firmware-builds
+    openwisp2fw_source_targets:
+        - system: ar71xx
+          subtarget: generic
+          profile: Default
+        - system: x86
+          subtarget: generic
+          profile: Generic
     openwisp2fw_organizations:
         - name: snakeoil # name of the org
           flavours: # supported flavours

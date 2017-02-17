@@ -1,21 +1,34 @@
 #!/bin/bash
 set -e
-ARCHS="{{ ' '.join(openwisp2fw_source_archs) }}"
 
-for arch in $ARCHS; do
-    # cleaning up, redownloading and reinstalling packages each time
-    # can avoid many wierd compilation errors that may be caused by
-    # occasional bugs in package source code; we want this automated process
-    # to run smoothly with fewer errors as possible, and this general compilation
-    # phase shouldn't be repeated often - because the firmware images
-    # are generated from the ImageBuilders compiled by this script -
-    # therefore we shall prefer a slightly longer initial compilation but
-    # with less frequent errors
-    ./scripts/feeds clean -a
-    ./scripts/feeds update -a
-    ./scripts/feeds install -a
+# cleaning up, redownloading and reinstalling packages each time
+# can avoid many wierd compilation errors that may be caused by
+# occasional bugs in package source code; we want this automated process
+# to run smoothly with fewer errors as possible, and this general compilation
+# phase shouldn't be repeated often - because the firmware images
+# are generated from the ImageBuilders compiled by this script -
+# therefore we shall prefer a slightly longer initial compilation but
+# with less frequent errors
+./scripts/feeds clean -a
+./scripts/feeds update -a
+./scripts/feeds install -a
+
+# remove eventual failed compilations artifacts and ignore errors
+rm .owf2_compiled_* 2>/dev/null || true
+
+{% for target in openwisp2fw_source_targets %}
+# do not compile imagebuilder for same subtarget more than once because not necessary
+if [ ! -f .owf2_compiled_{{ target.system }}_{{ target.subtarget }} ]; then
     cp .config.default .config
-    echo "CONFIG_TARGET_$arch=y" >> .config;
+    echo "CONFIG_TARGET_{{ target.system }}=y" >> .config;
+    echo "CONFIG_TARGET_{{ target.system }}_{{ target.subtarget }}=y" >> .config;
+    # profile information can still be necessary to avoid "image is too big" error in some cases
+    echo "CONFIG_TARGET_{{ target.system }}_{{ target.subtarget }}_{{ target.profile }}=y" >> .config;
     make defconfig
     make -j {{ openwisp2fw_source_cores }} BUILD_LOG=1
-done
+    touch .owf2_compiled_{{ target.system }}_{{ target.subtarget }}
+fi;
+
+{% endfor %}
+
+rm .owf2_compiled_*
