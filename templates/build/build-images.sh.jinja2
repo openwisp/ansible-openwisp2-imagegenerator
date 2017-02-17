@@ -1,29 +1,29 @@
 #!/bin/bash
-ARCHS="{{ ' '.join(openwisp2fw_source_archs) }}"
 BASEDIR="{{ openwisp2fw_generator_dir }}"
 BINDIR="{{ openwisp2fw_bin_dir }}"
 START_TIME=$(date +"%Y-%m-%d-%H%M%S")
 
-{% for arch in openwisp2fw_source_archs %}
+{% for target in openwisp2fw_source_targets %}
     {% for org in openwisp2fw_organizations %}
 
-        arch="{{ arch }}"
+        system="{{ target.system }}"
+        subtarget="{{ target.subtarget }}"
+        profile="{{ target.profile }}"
         org="{{ org.name }}"
         files_dir=$BASEDIR/files/$org
         versioned_dir="$BINDIR/$org/$START_TIME"
         latest_link="$BINDIR/$org/latest"
-        cd $BASEDIR/$arch
+        cd $BASEDIR/$system-$subtarget
         {% for flavour_string in org.flavours %}
-            {# build image for arch/org/flavour #}
+            {# build image for target/org/flavour #}
             {% set flavour = openwisp2fw_image_flavours[flavour_string] %}
-            {% if flavour[arch] is defined %}
+            {% if flavour[target.system] is defined %}
 
             flavour="{{ flavour_string }}"
-            profile="{{ flavour[arch].profile }}"
-            packages="{{ ' '.join(flavour[arch].packages) }}"
-            bin_dir="$versioned_dir/$arch/$flavour"
+            packages="{{ ' '.join(flavour[target.system].packages) }}"
+            bin_dir="$versioned_dir/$system/$flavour"
             echo "==================================="
-            echo "$arch / $org / $flavour"
+            echo "$system-$subtarget-$profile / $org / $flavour"
             make image PROFILE="$profile" \
                        PACKAGES="$packages" \
                        FILES="$files_dir" \
