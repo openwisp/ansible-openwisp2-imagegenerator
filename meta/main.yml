@@ -5,11 +5,14 @@ dependencies: []
 galaxy_info:
   author: nemesisdesign
   description: Generate different OpenWISP2 firmware images for several organizations
-  license: MIT
+  license: BSD
+  min_ansible_version: 2.2
   platforms:
   - name: Debian
     versions:
     - wheezy
     - jessie
   categories:
+    - networking
+  galaxy_tags:
     - networking
