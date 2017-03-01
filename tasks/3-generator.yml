@@ -129,3 +129,10 @@
     src: "{{ playbook_dir }}/organizations/{{ item.item.name }}/"
   with_items: "{{ organization_dirs.results }}"
   when: item.stat.exists == true
+
+# Temporary workaround for probable bug in lede-17 imagebuilder
+- name: "[WORKAROUND] Create local bin path"
+  file:
+    dest: "{{ openwisp2fw_generator_dir }}/{{ item.system }}-{{ item.subtarget }}/bin/targets/{{ item.system }}/{{ item.subtarget }}"
+    state: directory
+  with_items: "{{ openwisp2fw_source_targets }}"
