@@ -19,10 +19,10 @@ openwisp2fw_apt_make_dependencies:
     # needed for mkpasswd
     - whois
 # base OpenWRT or LEDE repository, defaults to official OpenWRT repo
-openwisp2fw_source_repo: https://github.com/openwrt/openwrt.git
+openwisp2fw_source_repo: https://git.lede-project.org/source.git
 # base OpenWRT or LEDE version, defaults to HEAD (master git branch)
 # accepted values: "HEAD", a branch name, a tag name or a SHA-1 commit hash
-openwisp2fw_source_version: HEAD
+openwisp2fw_source_version: lede-17.01
 # contents of feeds.conf
 openwisp2fw_source_feeds:
     - method: src-git
