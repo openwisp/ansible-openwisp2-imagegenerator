@@ -144,7 +144,7 @@ At this stage your directory layout should look like the following:
 
 Now is time to **start the compilation of OpenWISP2 Firmware**.
 
-Run the playbook **on your local machine** with:
+Launch the playbook **from your local machine** with:
 
     ansible-playbook -i hosts playbook.yml -e "recompile=1 cores=4"
 
