@@ -25,7 +25,7 @@ if [ ! -f .owf2_compiled_{{ target.system }}_{{ target.subtarget }} ]; then
     # profile information can still be necessary to avoid "image is too big" error in some cases
     echo "CONFIG_TARGET_{{ target.system }}_{{ target.subtarget }}_{{ target.profile }}=y" >> .config;
     make defconfig
-    make -j {{ openwisp2fw_source_cores }} BUILD_LOG=1
+    make -j {{ cores }} BUILD_LOG=1
     touch .owf2_compiled_{{ target.system }}_{{ target.subtarget }}
 fi;
 

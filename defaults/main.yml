@@ -1,6 +1,6 @@
 # variables holding extra parameters
-openwisp2fw_source_recompile: "{{ recompile|default(false) }}"
-openwisp2fw_source_cores: "{{ cores|default(1) }}"
+recompile: "{{ recompile|default(false) }}"
+cores: "{{ cores|default(1) }}"
 # ssl library
 openwisp2fw_ssl_lib: openssl
 # apt packages needed for compilation
