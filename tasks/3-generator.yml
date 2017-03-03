@@ -48,12 +48,16 @@
     path: "{{ openwisp2fw_generator_dir }}/files/{{ item.name }}"
     state: directory
   with_items: "{{ openwisp2fw_organizations }}"
+  # support organization filtering
+  when: not org_filter or item.name in org_filter
 
 - name: Copy general role files to each organization
   copy:
     dest: "{{ openwisp2fw_generator_dir }}/files/{{ item.name }}"
     src: files/
   with_items: "{{ openwisp2fw_organizations }}"
+  # support organization filtering
+  when: not org_filter or item.name in org_filter
 
 # the following task checks whether <playbook-dir>/files/ exists
 # and stores the result of this check in a variable
@@ -62,28 +66,40 @@
   become: false
   register: file_dir
 
-# perform action only if playbook_dir contains a file directory
 - name: Copy general playbook files to each organization
   copy:
     dest: "{{ openwisp2fw_generator_dir }}/files/{{ item.name }}"
     src: "{{ playbook_dir }}/files/"
   with_items: "{{ openwisp2fw_organizations }}"
-  when: file_dir.stat.exists == true
+  # perform action only if playbook_dir contains a file directory
+  # and support organization filtering
+  when: >
+    file_dir.stat.exists == true and
+    (not org_filter or item.name in org_filter)
 
 - name: /etc/config/openwisp
   template:
     dest: "{{ openwisp2fw_generator_dir }}/files/{{ item.name }}/etc/config/openwisp"
     src: uci/openwisp.jinja2
   with_items: "{{ openwisp2fw_organizations }}"
-  when: item.openwisp is defined
+  # avoid failure if not using this feature
+  # and support organization filtering
+  when: >
+    item.openwisp is defined and
+    (not org_filter or item.name in org_filter)
 
 - name: Encrypt luci passwords
   shell: "mkpasswd -5 {{ item.luci_openwisp.password }}"
   args:
     chdir: "{{ openwisp2fw_source_dir }}"
   with_items: "{{ openwisp2fw_organizations }}"
+  # avoid failure if not using this feature
+  # and support organization filtering
+  when: >
+    item.luci_openwisp is defined and
+    item.luci_openwisp.password is defined and
+    (not org_filter or item.name in org_filter)
   register: encrypted_luci_passwords
-  when: item.luci_openwisp is defined and item.luci_openwisp.password is defined
 
 - name: /etc/config/luci_openwisp
   template:
@@ -91,7 +107,12 @@
     src: uci/luci_openwisp.jinja2
   with_items: "{{ encrypted_luci_passwords.results }}"
   # avoid failure if not using this feature
-  when: encrypted_luci_passwords is defined and encrypted_luci_passwords.results is defined and item.item.luci_openwisp.password
+  # and support organization filtering
+  when: >
+    encrypted_luci_passwords is defined and
+    encrypted_luci_passwords.results is defined and
+    item.item.luci_openwisp.password and
+    (not org_filter or item.item.name in org_filter)
 
 - name: Encrypt root passwords
   shell: "mkpasswd -5 {{ item.root_password }}"
@@ -99,7 +120,11 @@
     chdir: "{{ openwisp2fw_source_dir }}"
   with_items: "{{ openwisp2fw_organizations }}"
   register: encrypted_passwords
-  when: item.root_password is defined
+  # avoid failure if not using this feature
+  # and support organization filtering
+  when: >
+    item.root_password is defined and
+    (not org_filter or item.name in org_filter)
 
 - name: /etc/shadow
   template:
@@ -108,7 +133,12 @@
     mode: 0600
   with_items: "{{ encrypted_passwords.results }}"
   # avoid failure if not using this feature
-  when: encrypted_passwords is defined and encrypted_passwords.results is defined and item.item.root_password is defined
+  # and support organization filtering
+  when: >
+    encrypted_passwords is defined and
+    encrypted_passwords.results is defined and
+    item.item.root_password is defined and
+    (not org_filter or item.item.name in org_filter)
 
 # the following task loops over each organization and checks whether
 # <playbook-dir>/organizations/<organization-name>/ exists
@@ -118,6 +148,8 @@
   become: false
   register: organization_dirs
   with_items: "{{ openwisp2fw_organizations }}"
+  # support organization filtering
+  when: not org_filter or item.name in org_filter
 
 # perform action only if corresponding organization directory exist
 # eg:
@@ -128,7 +160,7 @@
     dest: "{{ openwisp2fw_generator_dir }}/files/{{ item.item.name }}"
     src: "{{ playbook_dir }}/organizations/{{ item.item.name }}/"
   with_items: "{{ organization_dirs.results }}"
-  when: item.stat.exists == true
+  when: item.stat is defined and item.stat.exists == true
 
 # Temporary workaround for probable bug in lede-17 imagebuilder
 - name: "[WORKAROUND] Create local bin path"

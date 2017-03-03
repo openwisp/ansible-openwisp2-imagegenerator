@@ -307,11 +307,27 @@ You can pass the following extra parameters to `ansible-playbook`:
 
 * `recompile`: wether to repeat the compilation step
 * `cores`: number of cores to use during the compilation step
+* `orgs`: comma separated list of organization names if you need to
+  limit the generation of images to specific organiations
 
-Example:
+### Examples
+
+Recompile with 16 cores:
 
 ```
 ansible-playbook -i hosts playbook.yml -e "recompile=1 cores=16"
+```
+
+Generate images only for organization ``foo``:
+
+```
+ansible-playbook -i hosts playbook.yml -e "orgs=foo"
+```
+
+Generate images only for organizations ``foo`` and ``bar``:
+
+```
+ansible-playbook -i hosts playbook.yml -e "orgs=foo,bar"
 ```
 
 Run specific steps

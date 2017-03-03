@@ -1,6 +1,7 @@
 # variables holding extra parameters
 recompile: "{{ recompile|default(false) }}"
 cores: "{{ cores|default(1) }}"
+org_filter: "{% if orgs is defined %}{{ orgs.split(',') }}{% endif %}"
 # ssl library
 openwisp2fw_ssl_lib: openssl
 # apt packages needed for compilation

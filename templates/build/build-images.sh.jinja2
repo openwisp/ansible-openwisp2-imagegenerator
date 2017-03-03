@@ -5,6 +5,7 @@ START_TIME=$(date +"%Y-%m-%d-%H%M%S")
 
 {% for target in openwisp2fw_source_targets %}
     {% for org in openwisp2fw_organizations %}
+        {% if not org_filter or org.name in org_filter %}
 
         system="{{ target.system }}"
         subtarget="{{ target.subtarget }}"
@@ -46,5 +47,6 @@ START_TIME=$(date +"%Y-%m-%d-%H%M%S")
             rm $latest_link
         fi
         ln -s $versioned_dir $latest_link
+        {% endif %}
     {% endfor %}
 {% endfor %}
