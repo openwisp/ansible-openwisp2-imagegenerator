@@ -18,7 +18,7 @@
 
 # ensure ansible user has write permissions in the directories it uses
 # this saves the annoiance of a "Permission Denied" error at the end of the process
-- name: Check write permissions
+- name: Write test file to check permissions
   # this task never fails but registers a variable that is checked later
   failed_when: false
   register: permission_check
@@ -43,7 +43,8 @@
     - "{{ openwisp2fw_bin_dir }}"
 
 # fail playbook loud if the variable permission_check contains "Permission denied"
-- fail:
+- name: Verify result of permission check
+  fail:
     msg: "{{ ansible_user }} doesn't have write permission to write in {{ item.item }}"
   when: '"module_stdout" in item and "Permission denied" in item.module_stdout'
   with_items: "{{ permission_check.results }}"
