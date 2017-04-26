@@ -37,11 +37,11 @@ openwisp2fw_source_feeds:
     - method: src-git
       name: packages
       location: https://github.com/openwrt/packages.git
-      branch: master
+      branch: lede-17.01
     - method: src-git
       name: luci
       location: https://github.com/openwrt/luci.git
-      branch: master
+      branch: lede-17.01
     - method: src-git
       name: targets
       location: https://github.com/openwrt/targets.git
