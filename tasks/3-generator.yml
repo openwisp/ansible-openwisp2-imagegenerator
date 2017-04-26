@@ -111,6 +111,7 @@
   when: >
     encrypted_luci_passwords is defined and
     encrypted_luci_passwords.results is defined and
+    item.item.luci_openwisp is defined and
     item.item.luci_openwisp.password and
     (not org_filter or item.item.name in org_filter)
 
