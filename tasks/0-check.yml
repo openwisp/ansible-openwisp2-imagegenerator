@@ -22,9 +22,7 @@
   # this task never fails but registers a variable that is checked later
   failed_when: false
   register: permission_check
-  file:
-    dest: "{{ item }}/__test__"
-    state: touch
+  command: "touch {{ item }}/__test__"
   with_items:
     - "{{ openwisp2fw_source_dir }}"
     - "{{ openwisp2fw_generator_dir }}"
@@ -45,6 +43,6 @@
 # fail playbook loud if the variable permission_check contains "Permission denied"
 - name: Verify result of permission check
   fail:
-    msg: "{{ ansible_user }} doesn't have write permission to write in {{ item.item }}"
-  when: '"module_stdout" in item and "Permission denied" in item.module_stdout'
+    msg: "{{ ansible_user }} can't write to directory: {{ item.item }}"
+  when: item.rc != 0
   with_items: "{{ permission_check.results }}"
