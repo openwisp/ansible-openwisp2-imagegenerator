@@ -12,4 +12,4 @@
   become: true
   become_user: root
   apt: name=acl state=latest
-  when: ansible_user != 'root'
+  when: ansible_user is not defined or ansible_user != 'root'

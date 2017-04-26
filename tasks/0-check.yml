@@ -43,6 +43,6 @@
 # fail playbook loud if the variable permission_check contains "Permission denied"
 - name: Verify result of permission check
   fail:
-    msg: "{{ ansible_user }} can't write to directory: {{ item.item }}"
+    msg: "{{ ansible_user|default('current user') }} can't write to directory: {{ item.item }}"
   when: item.rc != 0
   with_items: "{{ permission_check.results }}"
