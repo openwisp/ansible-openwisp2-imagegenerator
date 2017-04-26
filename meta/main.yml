@@ -12,7 +12,5 @@ galaxy_info:
     versions:
     - wheezy
     - jessie
-  categories:
-    - networking
   galaxy_tags:
     - networking
