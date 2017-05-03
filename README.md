@@ -85,7 +85,7 @@ Create a new file `hosts` **on your local machine** with the following contents:
 
 Substitute `mycompiler.mydomain.com` with your hostname (ip addresses are allowed as well).
 
-Also put your SSH user and password respectively in place of `<youruser>` and `<sudo-password>`.
+Also put your SSH user and password respectively in place of `<youruser>` and `<sudo-password>` (must be sudoer and non-root).
 These credentials are used during the [Installation of dependencies step](#1-installation-of-dependencies).
 
 ### 5. Create playbook file
