@@ -347,6 +347,23 @@ Example 2, run only the preparation of generators and build steps:
 ansible-playbook -i hosts playbook.yml -t generator,build
 ```
 
+Targets with no subtarget
+=========================
+
+This example shows how to fill `openwisp2fw_source_targets` in
+order to compile targets that do not specify a subtarget
+(eg: sunxi, ARMv8, QEMU):
+
+```yaml
+openwisp2fw_source_targets:
+    # Allwinner SOC, Lamobo R1
+    - system: sunxi
+      profile: DEVICE_sun7i-a20-lamobo-r1
+    # QEMU ARM Virtual Image
+    - system: armvirt
+      profile: Default
+```
+
 Support
 =======
 

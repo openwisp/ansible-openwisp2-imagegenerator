@@ -11,36 +11,42 @@
 - name: Create find scripts on server
   template:
     src: generator/find.sh.jinja2
-    dest: "{{ openwisp2fw_source_dir }}/find-{{ item.system }}-{{ item.subtarget }}.sh"
+    dest: "{{ openwisp2fw_source_dir }}/find-{{ item.system }}-{{ item.subtarget|default('generic') }}.sh"
     mode: 0755
   with_items: "{{ openwisp2fw_source_targets }}"
 
 - name: Call find scripts
-  shell: "{{ openwisp2fw_source_dir }}/find-{{ item.system }}-{{ item.subtarget }}.sh"
+  shell: "{{ openwisp2fw_source_dir }}/find-{{ item.system }}-{{ item.subtarget|default('generic') }}.sh"
   args:
     chdir: "{{ openwisp2fw_source_dir }}"
-    creates: "{{ openwisp2fw_generator_dir }}/{{ item.system }}-{{ item.subtarget }}.gz"
+    creates: "{{ openwisp2fw_generator_dir }}/{{ item.system }}-{{ item.subtarget|default('generic') }}.gz"
   with_items: "{{ openwisp2fw_source_targets }}"
 
 - name: Extract copies of imagebuilder archives
   unarchive:
     copy: false
-    src: "{{ openwisp2fw_generator_dir }}/{{ item.system }}-{{ item.subtarget }}.gz"
+    src: "{{ openwisp2fw_generator_dir }}/{{ item.system }}-{{ item.subtarget|default('generic') }}.gz"
     dest: "{{ openwisp2fw_generator_dir }}"
-    creates: "{{ openwisp2fw_generator_dir }}/.archive-{{ item.system }}-{{ item.subtarget }}-created"
+    creates: "{{ openwisp2fw_generator_dir }}/.archive-{{ item.system }}-{{ item.subtarget|default('generic') }}-created"
   with_items: "{{ openwisp2fw_source_targets }}"
 
 - name: Remove copies of imagebuilder archives
   file:
-    dest: "{{ openwisp2fw_generator_dir }}/{{ item.system }}-{{ item.subtarget }}.gz"
+    dest: "{{ openwisp2fw_generator_dir }}/{{ item.system }}-{{ item.subtarget|default('generic') }}.gz"
     state: absent
   with_items: "{{ openwisp2fw_source_targets }}"
 
-- name: Rename ImageBuilder dirs to just the name of their corresponding target system
-  shell: "mv *-{{ item.system }}-{{ item.subtarget }}* {{ item.system }}-{{ item.subtarget }}"
+- name: Rename ImageBuilder dirs to the name of their corresponding target system
+  shell: >
+    {% if item.subtarget is defined %}
+        {% set partial = '{0}-{1}'.format(item['system'], item['subtarget']) %}
+    {% else %}
+        {% set partial = item['system'] %}
+    {% endif %}
+    mv *-{{ partial }}* {{ item.system }}-{{ item.subtarget|default('generic') }}
   args:
     chdir: "{{ openwisp2fw_generator_dir }}"
-    creates: "{{ openwisp2fw_generator_dir }}/{{ item.system }}-{{ item.subtarget }}"
+    creates: "{{ openwisp2fw_generator_dir }}/{{ item.system }}-{{ item.subtarget|default('generic') }}"
   with_items: "{{ openwisp2fw_source_targets }}"
 
 - name: Create a "files" directory for each organization
@@ -166,6 +172,6 @@
 # Temporary workaround for probable bug in lede-17 imagebuilder
 - name: "[WORKAROUND] Create local bin path"
   file:
-    dest: "{{ openwisp2fw_generator_dir }}/{{ item.system }}-{{ item.subtarget }}/bin/targets/{{ item.system }}/{{ item.subtarget }}"
+    dest: "{{ openwisp2fw_generator_dir }}/{{ item.system }}-{{ item.subtarget|default('generic') }}/bin/targets/{{ item.system }}/{{ item.subtarget|default('generic') }}"
     state: directory
   with_items: "{{ openwisp2fw_source_targets }}"

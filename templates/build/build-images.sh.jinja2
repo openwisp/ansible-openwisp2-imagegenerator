@@ -8,7 +8,7 @@ START_TIME=$(date +"%Y-%m-%d-%H%M%S")
         {% if not org_filter or org.name in org_filter %}
 
         system="{{ target.system }}"
-        subtarget="{{ target.subtarget }}"
+        subtarget="{{ target.subtarget|default('generic') }}"
         profile="{{ target.profile }}"
         org="{{ org.name }}"
         files_dir=$BASEDIR/files/$org
