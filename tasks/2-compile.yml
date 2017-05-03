@@ -21,6 +21,6 @@
     mode: 0755
 
 - name: ./compile.sh
-  shell: ./compile.sh
+  command: ./compile.sh
   args:
     chdir: "{{ openwisp2fw_source_dir }}"

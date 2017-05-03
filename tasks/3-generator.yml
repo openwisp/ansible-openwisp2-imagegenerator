@@ -16,7 +16,7 @@
   with_items: "{{ openwisp2fw_source_targets }}"
 
 - name: Call find scripts
-  shell: "{{ openwisp2fw_source_dir }}/find-{{ item.system }}-{{ item.subtarget|default('generic') }}.sh"
+  command: "{{ openwisp2fw_source_dir }}/find-{{ item.system }}-{{ item.subtarget|default('generic') }}.sh"
   args:
     chdir: "{{ openwisp2fw_source_dir }}"
     creates: "{{ openwisp2fw_generator_dir }}/{{ item.system }}-{{ item.subtarget|default('generic') }}.gz"
@@ -95,7 +95,7 @@
     (not org_filter or item.name in org_filter)
 
 - name: Encrypt luci passwords
-  shell: "mkpasswd -5 {{ item.luci_openwisp.password }}"
+  command: "mkpasswd -5 {{ item.luci_openwisp.password }}"
   args:
     chdir: "{{ openwisp2fw_source_dir }}"
   with_items: "{{ openwisp2fw_organizations }}"
@@ -122,7 +122,7 @@
     (not org_filter or item.item.name in org_filter)
 
 - name: Encrypt root passwords
-  shell: "mkpasswd -5 {{ item.root_password }}"
+  command: "mkpasswd -5 {{ item.root_password }}"
   args:
     chdir: "{{ openwisp2fw_source_dir }}"
   with_items: "{{ openwisp2fw_organizations }}"
