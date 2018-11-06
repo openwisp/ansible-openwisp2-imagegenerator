@@ -20,10 +20,10 @@ openwisp2fw_apt_make_dependencies:
     # needed for mkpasswd
     - whois
 # base LEDE repository or OpenWRT
-openwisp2fw_source_repo: git://git.lede-project.org/source.git
+openwisp2fw_source_repo: https://github.com/openwrt/openwrt.git
 # base LEDE or OpenWRT version
 # accepted values: "HEAD", a branch name, a tag name or a SHA-1 commit hash
-openwisp2fw_source_version: lede-17.01
+openwisp2fw_source_version: openwrt-18.06
 # contents of feeds.conf
 openwisp2fw_source_feeds:
     - method: src-git
@@ -37,11 +37,11 @@ openwisp2fw_source_feeds:
     - method: src-git
       name: packages
       location: https://github.com/openwrt/packages.git
-      branch: lede-17.01
+      branch: openwrt-18.06
     - method: src-git
       name: luci
       location: https://github.com/openwrt/luci.git
-      branch: lede-17.01
+      branch: openwrt-18.06
     - method: src-git
       name: targets
       location: https://github.com/openwrt/targets.git
