@@ -19,9 +19,9 @@ openwisp2fw_apt_make_dependencies:
     - xsltproc
     # needed for mkpasswd
     - whois
-# base LEDE repository or OpenWRT
+# base OpenWRT repository
 openwisp2fw_source_repo: https://github.com/openwrt/openwrt.git
-# base LEDE or OpenWRT version
+# base OpenWRT version
 # accepted values: "HEAD", a branch name, a tag name or a SHA-1 commit hash
 openwisp2fw_source_version: openwrt-18.06
 # contents of feeds.conf
@@ -74,7 +74,7 @@ openwisp2fw_source_additional_packages:
     - kmod-via-velocity
     - kmod-button-hotplug
     - partx-utils
-# other arbitrary configurations added in the OpenWRT/LEDE .config file
+# other arbitrary configurations added in the OpenWRT .config file
 openwisp2fw_source_other_configs:
     - CONFIG_BUSYBOX_CUSTOM=y
     - CONFIG_BUSYBOX_CONFIG_FEATURE_EDITING_SAVEHISTORY=y

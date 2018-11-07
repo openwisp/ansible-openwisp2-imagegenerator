@@ -169,7 +169,7 @@
   with_items: "{{ organization_dirs.results }}"
   when: item.stat is defined and item.stat.exists == true
 
-# Temporary workaround for probable bug in lede-17 imagebuilder
+# Temporary workaround for probable bug in OpenWRT (lede-17) imagebuilder
 - name: "[WORKAROUND] Create local bin path"
   file:
     dest: "{{ openwisp2fw_generator_dir }}/{{ item.system }}-{{ item.subtarget|default('generic') }}/bin/targets/{{ item.system }}/{{ item.subtarget|default('generic') }}"

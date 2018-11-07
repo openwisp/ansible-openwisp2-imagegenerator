@@ -16,7 +16,7 @@ Required role variables
 
 The following variables are required:
 
-* `openwisp2fw_source_dir`: indicates the directory of the [LEDE](https://lede-project.org/) or
+* `openwisp2fw_source_dir`: indicates the directory of the [OpenWRT](https://openwrt.org/) or
   [OpenWRT](https://openwrt.org/) source that is used during [compilation](#2-compilation)
 * `openwisp2fw_generator_dir`: indicates the directory used for the [preparation of generators](#3-preparation-of-generators)
 * `openwisp2fw_bin_dir`: indicates the directory used when [building the final images](#4-building-of-final-images)
@@ -127,7 +127,7 @@ Create a new playbook file `playbook.yml` **on your local machine** with the fol
 ```
 
 This playbook will let you compile firmware images for an organization named `snakeoil` using only
-the `standard` flavour (which includes a default LEDE 17.01 image with the standard OpenWISP2 modules)
+the `standard` flavour (which includes a default OpenWRT 18.06 image with the standard OpenWISP2 modules)
 for two architectures, ar71xx and x86.
 
 See the section [Role Variables](#role-variables) to know how to customize the available configurations.
@@ -220,8 +220,8 @@ In this phase the operating system dependencies needed for the subsequent steps 
 
 **tag**: `compile`
 
-The LEDE/OpenWRT source is compiled in order to produce something
-called "[Image Generator](https://lede-project.org/docs/user-guide/imagebuilder)".
+The OpenWRT source is compiled in order to produce something
+called "[Image Generator](https://openwrt.org/docs/guide-user/additional-software/imagebuilder)".
 The *image generator* is an archive that contains the precompiled packages and a special
 `Makefile` that will be used to generate the customized images for each organization.
 
