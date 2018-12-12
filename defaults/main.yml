@@ -17,8 +17,6 @@ openwisp2fw_apt_make_dependencies:
     - gawk
     - ccache
     - xsltproc
-    # needed for mkpasswd
-    - whois
 # base OpenWRT repository
 openwisp2fw_source_repo: https://github.com/openwrt/openwrt.git
 # base OpenWRT version

@@ -95,7 +95,7 @@
     (not org_filter or item.name in org_filter)
 
 - name: Encrypt luci passwords
-  command: "mkpasswd -5 {{ item.luci_openwisp.password }}"
+  command: "python3 -c 'import crypt; print(crypt.crypt({{ item.luci_openwisp.password }}, \"$1$mysalt$\"))'"
   args:
     chdir: "{{ openwisp2fw_source_dir }}"
   with_items: "{{ openwisp2fw_organizations }}"
@@ -122,7 +122,7 @@
     (not org_filter or item.item.name in org_filter)
 
 - name: Encrypt root passwords
-  command: "mkpasswd -5 {{ item.root_password }}"
+  command: "python3 -c 'import crypt; print(crypt.crypt({{ item.luci_openwisp.password }}, \"$1$mysalt$\"))'"
   args:
     chdir: "{{ openwisp2fw_source_dir }}"
   with_items: "{{ openwisp2fw_organizations }}"
