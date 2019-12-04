@@ -112,11 +112,6 @@ Create a new playbook file `playbook.yml` **on your local machine** with the fol
         - name: snakeoil # name of the org
           flavours: # supported flavours
             - standard
-          luci_openwisp: # /etc/config/luci_openwisp
-            # other config keys can be added freely
-            username: "operator"
-            # clear text password that will be encrypted in /etc/config/luci_openwisp
-            password: "<CHANGE_ME>"
           openwisp: # /etc/config/openwisp
             # other config keys can be added freely
             url: "https://my-openwisp2-instance.com"
