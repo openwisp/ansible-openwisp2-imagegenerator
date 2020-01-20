@@ -3,6 +3,7 @@
     repo: "{{ openwisp2fw_source_repo }}"
     dest: "{{ openwisp2fw_source_dir }}"
     version: "{{ openwisp2fw_source_version }}"
+    force: no
 
 - name: Set feeds.conf
   template:
