@@ -1,7 +1,7 @@
 # variables holding extra parameters
 recompile: "false"
 cores: 1
-force: yes
+force: no
 org_filter: "{% if orgs is defined %}{{ orgs.split(',') }}{% endif %}"
 # ssl library
 openwisp2fw_ssl_lib: openssl
