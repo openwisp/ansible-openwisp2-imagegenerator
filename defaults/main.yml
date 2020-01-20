@@ -1,6 +1,7 @@
 # variables holding extra parameters
 recompile: "false"
 cores: 1
+force: yes
 org_filter: "{% if orgs is defined %}{{ orgs.split(',') }}{% endif %}"
 # ssl library
 openwisp2fw_ssl_lib: openssl
@@ -29,10 +30,6 @@ openwisp2fw_source_feeds:
     - method: src-git
       name: openwisp
       location: https://github.com/openwisp/openwisp-config.git
-      branch: master
-    - method: src-git
-      name: luciopenwisp
-      location: https://github.com/openwisp/luci-openwisp.git
       branch: master
     - method: src-git
       name: packages

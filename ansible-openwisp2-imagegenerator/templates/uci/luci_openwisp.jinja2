@@ -1,7 +1,0 @@
-config openwisp 'gui'
-	option password '{{ item.stdout }}'
-{% for key, value in item.item.luci_openwisp.items() %}
-{% if key != 'password' %}
-	option {{ key }} '{{ value }}'
-{% endif %}
-{% endfor %}
