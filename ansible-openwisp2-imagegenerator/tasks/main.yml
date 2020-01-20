@@ -1,0 +1,26 @@
+# perform a check of prerequisites before proceding
+# "fail fast and early"
+- include: 0-check.yml
+  # these checks must be always executed
+  tags: [openwisp2fw, check, install, compile, generator, build]
+
+# install system dependencies
+- include: 1-apt.yml
+  tags: [openwisp2fw, install]
+
+# compile OpenWRT in order to produce the ImageBuilder(s)
+# these actions are performed only if "recompile=1" is passed as an extra param
+# or if recompile == true
+- include: 2-compile.yml
+  tags: [openwisp2fw, compile]
+  when: recompile
+
+# prepare ImageGenerator directory and files
+# but do not compile images yet
+- include: 3-generator.yml
+  tags: [openwisp2fw, generator]
+
+# build images for each organization and flavour
+# store binaries in versioned directories
+- include: 4-build.yml
+  tags: [openwisp2fw, build]

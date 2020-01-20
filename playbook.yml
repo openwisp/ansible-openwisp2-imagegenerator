@@ -1,0 +1,23 @@
+# playbook.yml
+- hosts: myserver
+  roles:
+    - openwisp.openwisp2-imagegenerator
+  vars:
+    openwisp2fw_source_dir: /home/aryan/openwisp2-firmware-source
+    openwisp2fw_generator_dir: /home/aryan/openwisp2-firmware-generator
+    openwisp2fw_bin_dir: /home/aryan/openwisp2-firmware-builds
+    openwisp2fw_source_targets:
+        - system: ar71xx
+          subtarget: generic
+          profile: Default
+    openwisp2fw_organizations:
+        - name: snakeoil # name of the org
+          flavours: # supported flavours
+            - standard
+          openwisp: # /etc/config/openwisp
+            # other config keys can be added freely
+            url: "https://my-openwisp2-instance.com"
+            shared_secret: "my-openwisp2-secret"
+            unmanaged: "{{ openwisp2fw_default_unmanaged }}"
+          # clear text password that will be encrypted in /etc/shadow
+          root_password: "Aryanjain25"

@@ -1,0 +1,10 @@
+- name: Prepare build-images.sh
+  template:
+    src: build/build-images.sh.jinja2
+    dest: "{{ openwisp2fw_generator_dir }}/build-images.sh"
+    mode: 0755
+
+- name: ./build-images.sh
+  command: ./build-images.sh
+  args:
+    chdir: "{{ openwisp2fw_generator_dir }}"

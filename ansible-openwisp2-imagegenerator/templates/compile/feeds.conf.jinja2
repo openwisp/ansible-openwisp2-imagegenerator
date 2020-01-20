@@ -1,0 +1,4 @@
+{% for feed in openwisp2fw_source_feeds %}
+{{ feed.method }} {{ feed.name }} {{ feed.location }}{% if feed.branch %};{{ feed.branch }}{% endif %}
+
+{% endfor %}

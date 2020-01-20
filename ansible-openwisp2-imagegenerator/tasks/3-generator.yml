@@ -1,0 +1,177 @@
+- name: "Remove {{ openwisp2fw_generator_dir }} (cleanup)"
+  file:
+    path: "{{ openwisp2fw_generator_dir }}"
+    state: absent
+
+- name: "Create {{ openwisp2fw_generator_dir }}"
+  file:
+    path: "{{ openwisp2fw_generator_dir }}"
+    state: directory
+
+- name: Create find scripts on server
+  template:
+    src: generator/find.sh.jinja2
+    dest: "{{ openwisp2fw_source_dir }}/find-{{ item.system }}-{{ item.subtarget|default('generic') }}.sh"
+    mode: 0755
+  with_items: "{{ openwisp2fw_source_targets }}"
+
+- name: Call find scripts
+  command: "{{ openwisp2fw_source_dir }}/find-{{ item.system }}-{{ item.subtarget|default('generic') }}.sh"
+  args:
+    chdir: "{{ openwisp2fw_source_dir }}"
+    creates: "{{ openwisp2fw_generator_dir }}/{{ item.system }}-{{ item.subtarget|default('generic') }}.gz"
+  with_items: "{{ openwisp2fw_source_targets }}"
+
+- name: Extract copies of imagebuilder archives
+  unarchive:
+    copy: false
+    src: "{{ openwisp2fw_generator_dir }}/{{ item.system }}-{{ item.subtarget|default('generic') }}.gz"
+    dest: "{{ openwisp2fw_generator_dir }}"
+    creates: "{{ openwisp2fw_generator_dir }}/.archive-{{ item.system }}-{{ item.subtarget|default('generic') }}-created"
+  with_items: "{{ openwisp2fw_source_targets }}"
+
+- name: Remove copies of imagebuilder archives
+  file:
+    dest: "{{ openwisp2fw_generator_dir }}/{{ item.system }}-{{ item.subtarget|default('generic') }}.gz"
+    state: absent
+  with_items: "{{ openwisp2fw_source_targets }}"
+
+- name: Rename ImageBuilder dirs to the name of their corresponding target system
+  shell: >
+    {% if item.subtarget is defined %}
+        {% set partial = '{0}-{1}'.format(item['system'], item['subtarget']) %}
+    {% else %}
+        {% set partial = item['system'] %}
+    {% endif %}
+    mv *-{{ partial }}* {{ item.system }}-{{ item.subtarget|default('generic') }}
+  args:
+    chdir: "{{ openwisp2fw_generator_dir }}"
+    creates: "{{ openwisp2fw_generator_dir }}/{{ item.system }}-{{ item.subtarget|default('generic') }}"
+  with_items: "{{ openwisp2fw_source_targets }}"
+
+- name: Create a "files" directory for each organization
+  file:
+    path: "{{ openwisp2fw_generator_dir }}/files/{{ item.name }}"
+    state: directory
+  with_items: "{{ openwisp2fw_organizations }}"
+  # support organization filtering
+  when: not org_filter or item.name in org_filter
+
+- name: Copy general role files to each organization
+  copy:
+    dest: "{{ openwisp2fw_generator_dir }}/files/{{ item.name }}"
+    src: files/
+  with_items: "{{ openwisp2fw_organizations }}"
+  # support organization filtering
+  when: not org_filter or item.name in org_filter
+
+# the following task checks whether <playbook-dir>/files/ exists
+# and stores the result of this check in a variable
+- name: check local /files dir
+  local_action: stat path={{ playbook_dir }}/files
+  become: false
+  register: file_dir
+
+- name: Copy general playbook files to each organization
+  copy:
+    dest: "{{ openwisp2fw_generator_dir }}/files/{{ item.name }}"
+    src: "{{ playbook_dir }}/files/"
+  with_items: "{{ openwisp2fw_organizations }}"
+  # perform action only if playbook_dir contains a file directory
+  # and support organization filtering
+  when: >
+    file_dir.stat.exists == true and
+    (not org_filter or item.name in org_filter)
+
+- name: /etc/config/openwisp
+  template:
+    dest: "{{ openwisp2fw_generator_dir }}/files/{{ item.name }}/etc/config/openwisp"
+    src: uci/openwisp.jinja2
+  with_items: "{{ openwisp2fw_organizations }}"
+  # avoid failure if not using this feature
+  # and support organization filtering
+  when: >
+    item.openwisp is defined and
+    (not org_filter or item.name in org_filter)
+
+- name: Encrypt luci passwords
+  command: "mkpasswd -5 {{ item.luci_openwisp.password }}"
+  args:
+    chdir: "{{ openwisp2fw_source_dir }}"
+  with_items: "{{ openwisp2fw_organizations }}"
+  # avoid failure if not using this feature
+  # and support organization filtering
+  when: >
+    item.luci_openwisp is defined and
+    item.luci_openwisp.password is defined and
+    (not org_filter or item.name in org_filter)
+  register: encrypted_luci_passwords
+
+- name: /etc/config/luci_openwisp
+  template:
+    dest: "{{ openwisp2fw_generator_dir }}/files/{{ item.item.name }}/etc/config/luci_openwisp"
+    src: uci/luci_openwisp.jinja2
+  with_items: "{{ encrypted_luci_passwords.results }}"
+  # avoid failure if not using this feature
+  # and support organization filtering
+  when: >
+    encrypted_luci_passwords is defined and
+    encrypted_luci_passwords.results is defined and
+    item.item.luci_openwisp is defined and
+    item.item.luci_openwisp.password and
+    (not org_filter or item.item.name in org_filter)
+
+- name: Encrypt root passwords
+  command: "mkpasswd -5 {{ item.root_password }}"
+  args:
+    chdir: "{{ openwisp2fw_source_dir }}"
+  with_items: "{{ openwisp2fw_organizations }}"
+  register: encrypted_passwords
+  # avoid failure if not using this feature
+  # and support organization filtering
+  when: >
+    item.root_password is defined and
+    (not org_filter or item.name in org_filter)
+
+- name: /etc/shadow
+  template:
+    dest: "{{ openwisp2fw_generator_dir }}/files/{{ item.item.name }}/etc/shadow"
+    src: generator/shadow.jinja2
+    mode: 0600
+  with_items: "{{ encrypted_passwords.results }}"
+  # avoid failure if not using this feature
+  # and support organization filtering
+  when: >
+    encrypted_passwords is defined and
+    encrypted_passwords.results is defined and
+    item.item.root_password is defined and
+    (not org_filter or item.item.name in org_filter)
+
+# the following task loops over each organization and checks whether
+# <playbook-dir>/organizations/<organization-name>/ exists
+# and stores the result of this check in a variable
+- name: check local /organizations dir
+  local_action: stat path={{ playbook_dir }}/organizations/{{ item.name }}
+  become: false
+  register: organization_dirs
+  with_items: "{{ openwisp2fw_organizations }}"
+  # support organization filtering
+  when: not org_filter or item.name in org_filter
+
+# perform action only if corresponding organization directory exist
+# eg:
+#   if <playbook-dir>/organizations/<organization-name> exists
+#   then include its contents
+- name: Copy organization specific files stored in playbook directory
+  copy:
+    dest: "{{ openwisp2fw_generator_dir }}/files/{{ item.item.name }}"
+    src: "{{ playbook_dir }}/organizations/{{ item.item.name }}/"
+  with_items: "{{ organization_dirs.results }}"
+  when: item.stat is defined and item.stat.exists == true
+
+# Temporary workaround for probable bug in OpenWRT (lede-17) imagebuilder
+- name: "[WORKAROUND] Create local bin path"
+  file:
+    dest: "{{ openwisp2fw_generator_dir }}/{{ item.system }}-{{ item.subtarget|default('generic') }}/bin/targets/{{ item.system }}/{{ item.subtarget|default('generic') }}"
+    state: directory
+  with_items: "{{ openwisp2fw_source_targets }}"
