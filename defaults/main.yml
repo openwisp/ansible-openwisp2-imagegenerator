@@ -23,7 +23,7 @@ openwisp2fw_apt_make_dependencies:
 openwisp2fw_source_repo: https://github.com/openwrt/openwrt.git
 # base OpenWRT version
 # accepted values: "HEAD", a branch name, a tag name or a SHA-1 commit hash
-openwisp2fw_source_version: openwrt-18.06
+openwisp2fw_source_version: openwrt-19.07
 # contents of feeds.conf
 openwisp2fw_source_feeds:
     - method: src-git
@@ -37,11 +37,11 @@ openwisp2fw_source_feeds:
     - method: src-git
       name: packages
       location: https://github.com/openwrt/packages.git
-      branch: openwrt-18.06
+      branch: openwrt-19.07
     - method: src-git
       name: luci
       location: https://github.com/openwrt/luci.git
-      branch: openwrt-18.06
+      branch: openwrt-19.07
     - method: src-git
       name: targets
       location: https://github.com/openwrt/targets.git
@@ -81,8 +81,8 @@ openwisp2fw_source_other_configs:
     - CONFIG_BUSYBOX_CONFIG_FEATURE_EDITING_SAVE_ON_EXIT=y
     - CONFIG_BUSYBOX_CONFIG_FEATURE_REVERSE_SEARCH=y
     - CONFIG_BUSYBOX_CONFIG_FEATURE_VI_UNDO=y
-    # workaround to avoid conflicts between wpad and wpad-mini
-    - "# CONFIG_PACKAGE_wpad-mini is not set"
+    # workaround to avoid conflicts between wpad and wpad-basic
+    - "# CONFIG_PACKAGE_wpad-basic is not set"
 openwisp2fw_source_targets:
     - system: ar71xx
       subtarget: generic
@@ -107,7 +107,7 @@ openwisp2fw_default_packages:
     - -firewall
     - -odhcpd
     - -odhcp6c
-    - -wpad-mini
+    - -wpad-basic
     # these packages will be added
     - wpad
     - iwinfo
