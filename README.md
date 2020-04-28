@@ -16,8 +16,7 @@ Required role variables
 
 The following variables are required:
 
-* `openwisp2fw_source_dir`: indicates the directory of the [OpenWRT](https://openwrt.org/) or
-  [OpenWRT](https://openwrt.org/) source that is used during [compilation](#2-compilation)
+* `openwisp2fw_source_dir`: indicates the directory of the [OpenWRT](https://openwrt.org/) source that is used during [compilation](#2-compilation)
 * `openwisp2fw_generator_dir`: indicates the directory used for the [preparation of generators](#3-preparation-of-generators)
 * `openwisp2fw_bin_dir`: indicates the directory used when [building the final images](#4-building-of-final-images)
 * `openwisp2fw_organizations`: a list of organizations; see the example `playbook.yml` file in the
