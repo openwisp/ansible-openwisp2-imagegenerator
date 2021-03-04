@@ -11,5 +11,5 @@ set -e
 %}
 
 find {{ openwisp2fw_source_dir }}/bin/ \
-     -iname '*-imagebuilder-{{ partial }}*' \
+     -iname '*-imagebuilder*{{ partial }}*' \
      -exec cp {} {{ filename }} \;
