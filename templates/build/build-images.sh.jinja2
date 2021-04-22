@@ -34,7 +34,8 @@ START_TIME=$(date +"%Y-%m-%d-%H%M%S")
 
             exit_code=$?
             if [ "$exit_code" != "0" ]; then
-                echo "FAILED: org=\"$org\" PROFILE=\"$profile\" PACKAGES=\"$packages\" FILES=\"$files_dir\" BIN_DIR=\"$bin_dir\""
+                echo "FAILED: $org /$system-$subtarget-$profile / $flavour"
+                echo "PROFILE=\"$profile\" PACKAGES=\"$packages\" FILES=\"$files_dir\" BIN_DIR=\"$bin_dir\""
                 rm -rf $bin_dir
                 exit 1
             fi
