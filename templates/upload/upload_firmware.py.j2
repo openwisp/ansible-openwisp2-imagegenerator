@@ -1,0 +1,105 @@
+#!/usr/bin/env python3
+
+import requests
+import subprocess
+import json
+import sys
+
+# insiel
+TOKEN = '{{ openwisp2fw_uploader.token }}'
+BASE_URL = '{{ openwisp2fw_uploader.url }}'
+# key: filesystem directory
+# value[0]: category uuid
+# value[1]: flavour
+CATEGORIES = {
+{% for organization in openwisp2fw_organizations -%}
+{% for flavour, category_id in organization.get('categories', {}).items() -%}
+    '{{ organization.name }}': ('{{ category_id }}', '{{ flavour }}'),
+{% endfor %}
+{% endfor %}
+}
+BASE_PATH = '{{ openwisp2fw_bin_dir }}'
+
+IMAGE_TYPES = {{ openwisp2fw_uploader.image_types | to_json }}
+
+
+def jsonify(data):
+    return json.dumps(data)
+
+
+def find_config_line(config_name):
+    with open('.config') as f:
+        config_contents = f.read()
+        lines = config_contents.split('\n')
+        for line in lines:
+            if line.startswith(config_name):
+                parts = line.split('=')
+                return parts[1].replace('"', '')
+        else:
+            raise ValueError(f'{config_name} not found')
+
+
+API_URL = f'{BASE_URL}/api/v1/firmware/'
+BUILD_URL = f'{API_URL}build/'
+AUTHORIZATION_HEADER = {'Authorization': f'Bearer {TOKEN}'}
+CONTENT_TYPE_HEADER = {'Content-Type': 'application/json'}
+HEADERS = AUTHORIZATION_HEADER.copy()
+HEADERS.update(CONTENT_TYPE_HEADER)
+VERSION_DIST = find_config_line('CONFIG_VERSION_DIST')
+VERSION_NUMBER = find_config_line('CONFIG_VERSION_NUMBER')
+
+out = subprocess.Popen(
+    ['./scripts/getver.sh'],
+    stdout=subprocess.PIPE,
+    stderr=subprocess.STDOUT
+)
+stdout, stderr = out.communicate()
+
+REVISION = str(stdout.decode('utf8').strip())
+OS_IDENTIFIER = f'{VERSION_DIST} {VERSION_NUMBER} {REVISION}'
+IMAGE_PREFIX = OS_IDENTIFIER.lower().replace(' ', '-')
+
+for org_slug, org_data in CATEGORIES.items():
+    category_id = org_data[0]
+    flavour = org_data[1]
+
+    # create build
+    response = requests.post(
+        BUILD_URL,
+        headers=HEADERS,
+        data=jsonify({
+            'version': VERSION_NUMBER,
+            'category': category_id,
+            'os': OS_IDENTIFIER
+        }),
+    )
+
+    if response.status_code != 201:
+        print('It was not possible to create a build.')
+        print(response.content.decode())
+        sys.exit(1)
+
+    BUILD_ID = response.json()['id']
+    UPLOAD_IMAGE_URL = f'{BUILD_URL}{BUILD_ID}/image/'
+
+    for image_file in IMAGE_TYPES:
+        target = image_file.split('-')[0]
+        BIN_PATH = f'{BASE_PATH}/{org_slug}/latest/{target}/{flavour}/{IMAGE_PREFIX}-{image_file}'
+
+        try:
+            BIN_FILE = open(BIN_PATH, 'rb')
+        except FileNotFoundError as e:
+            print(f'Skipping {image_file} because of the following error:\n{e}')
+            continue
+
+        # upload image
+        response = requests.post(
+            UPLOAD_IMAGE_URL,
+            headers=AUTHORIZATION_HEADER,
+            data={
+                'type': image_file,
+                'build': BUILD_ID
+            },
+            files={'file': BIN_FILE},
+        )
+        assert response.status_code == 201

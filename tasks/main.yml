@@ -24,3 +24,9 @@
 # store binaries in versioned directories
 - include: 4-build.yml
   tags: [openwisp2fw, build]
+
+# upload firmware images
+# to openwisp-firmware-upgrader
+- include: 5-upload.yml
+  tags: [openwisp2fw, upload]
+  when: openwisp2fw_uploader.enabled

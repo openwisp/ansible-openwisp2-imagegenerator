@@ -263,6 +263,85 @@ and 2 flavours (eg: standard and mini), you will get 8 groups of images:
 The images will be created in the directory specified in
 `openwisp2fw_bin_dir`.
 
+### 5. Upload images to OpenWISP Firmware Upgrader
+
+The last step is to upload images to the
+[OpenWISP Firmware Upgrader module](https://github.com/openwisp/openwisp-firmware-upgrader).
+This step is optional and disabled by default.
+
+To enable this feature, the variables ``openwisp2fw_uploader``
+and ``openwisp2fw_organizations.categories`` need to be configured
+as in the example below:
+
+```yaml
+- hosts:
+    - myhost
+  roles:
+    - openwisp.openwisp2-imagegenerator
+  vars:
+    openwisp2fw_controller_url: "https://openwisp.myproject.com"
+    openwisp2fw_organizations:
+      - name: staging
+        flavours:
+          - default
+        openwisp:
+          url: "{{ openwisp2fw_controller_url }}"
+          shared_secret: "xxxxx"
+        root_password: "xxxxx"
+        categories:
+          default: <CATEGORY-UUID>
+      - name: prod
+        flavours:
+          - default
+        openwisp:
+          url: "{{ openwisp2fw_controller_url }}"
+          shared_secret: "xxxxx"
+        root_password: "xxxxx"
+        categories:
+          default: <CATEGORY-UUID>
+    openwisp2fw_uploader:
+        enabled: true
+        url: "{{ openwisp2fw_controller_url }}"
+        token: "<REST-API-USER-TOKEN>"
+        image_types:
+            - ath79-generic-ubnt_airrouter-squashfs-sysupgrade.bin
+            - ar71xx-generic-ubnt-bullet-m-xw-squashfs-sysupgrade.bin
+            - ar71xx-generic-ubnt-bullet-m-squashfs-sysupgrade.bin
+            - octeon-erlite-squashfs-sysupgrade.tar
+            - ath79-generic-ubnt_nanostation-loco-m-xw-squashfs-sysupgrade.bin
+            - ath79-generic-ubnt_nanostation-loco-m-squashfs-sysupgrade.bin
+            - ath79-generic-ubnt_nanostation-m-xw-squashfs-sysupgrade.bin
+            - ar71xx-generic-ubnt-nano-m-squashfs-sysupgrade.bin
+            - ath79-generic-ubnt_unifiac-mesh-squashfs-sysupgrade.bin
+            - x86-64-combined-squashfs.img.gz
+            - x86-generic-combined-squashfs.img.gz
+            - x86-geode-combined-squashfs.img.gz
+            - ar71xx-generic-xd3200-squashfs-sysupgrade.bin
+```
+
+The following placeholders in the example will have to be substituted:
+
+- `<CATEGORY-UUID>` is the UUID o the firmware category in OpenWISP Firmware Upgrader
+- `<REST-API-USER-TOKEN>` is the REST auth token of a user with permissions to upload images
+
+You can retrieve the REST auth token by sending a POST request using the Browsable API web interface of OpenWISP:
+
+1. Open the browser at `https://<openwisp-base-url>/api/v1/user/token/`.
+2. Enter username and password in the form at the bottom of the page.
+3. Submit the form and you will get the REST auth token in the response.
+
+The upload script creates a new build object and then uploads the firmware images
+specified in `image_types`, which have to correspond to the identifiers like
+`ar71xx-generic-tl-wdr4300-v1-il-squashfs-sysupgrade.bin` defined in the
+[hardware.py file of OpenWISP Firmware Upgrader](https://github.com/openwisp/openwisp-firmware-upgrader/blob/master/openwisp_firmware_upgrader/hardware.py).
+
+Other important points to know about the `upload_firmware.py` script:
+
+- The script reads `CONFIG_VERSION_DIST` and `CONFIG_VERSION_NUMBER`
+  from the `.config` file of the OpenWrt source code to determine the build
+  version.
+- The script will fail if a build with the same version and category already exists (it does not attempt to upload images to an existing build).
+
 Adding files to images
 ======================
 
@@ -357,7 +436,7 @@ order to compile targets that do not specify a subtarget
 openwisp2fw_source_targets:
     # Allwinner SOC, Lamobo R1
     - system: sunxi
-      profile: DEVICE_sun7i-a20-lamobo-r1
+      profile: sun7i-a20-lamobo-r1
     # QEMU ARM Virtual Image
     - system: armvirt
       profile: Default

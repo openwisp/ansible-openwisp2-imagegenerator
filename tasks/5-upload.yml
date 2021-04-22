@@ -1,0 +1,10 @@
+- name: Prepare upload script
+  template:
+    src: upload/upload_firmware.py.j2
+    dest: "{{ openwisp2fw_source_dir }}/upload_firmware.py"
+    mode: 0744
+
+- name: ./upload_firmware.py
+  command: ./upload_firmware.py
+  args:
+    chdir: "{{ openwisp2fw_source_dir }}"
