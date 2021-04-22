@@ -20,15 +20,22 @@ rm .owf2_compiled_* 2>/dev/null || true
 {% set control_file = '.owf2_compiled_{0}_{1}'.format(target['system'],
                                                       target.get('subtarget', 'generic'))
 %}
+
+{% if target['profile'] not in ['Default', 'Generic'] %}
+    {% set profile = 'DEVICE_{0}'.format(target['profile']) %}
+{% else %}
+    {% set profile = target['profile'] %}
+{% endif %}
+
 # do not compile imagebuilder for same subtarget more than once because not necessary
 if [ ! -f {{ control_file }} ]; then
     cp .config.default .config
     echo "CONFIG_TARGET_{{ target.system }}=y" >> .config;
 {% if target.subtarget is defined %}
     echo "CONFIG_TARGET_{{ target.system }}_{{ target.subtarget }}=y" >> .config;
-    {% set profile_config_partial = '{0}_{1}'.format(target['subtarget'], target['profile']) %}
+    {% set profile_config_partial = '{0}_{1}'.format(target['subtarget'], profile) %}
 {% else %}
-    {% set profile_config_partial = target['profile'] %}
+    {% set profile_config_partial = profile %}
 {% endif -%}
     # profile information can still be necessary to avoid "image is too big" error in some cases
     echo "CONFIG_TARGET_{{ target.system }}_{{ profile_config_partial }}=y" >> .config;
