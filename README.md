@@ -126,7 +126,7 @@ Create a new playbook file `playbook.yml` **on your local machine** with the fol
 ```
 
 This playbook will let you compile firmware images for an organization named `snakeoil` using only
-the `standard` flavour (which includes a default OpenWRT 18.06 image with the standard OpenWISP2 modules)
+the `standard` flavour (which includes a default OpenWRT 19.07 image with the standard OpenWISP2 modules)
 for two architectures, ar71xx and x86.
 
 See the section [Role Variables](#role-variables) to know how to customize the available configurations.
