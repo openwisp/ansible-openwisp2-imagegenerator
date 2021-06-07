@@ -2,7 +2,7 @@
 # "fail fast and early"
 - include: 0-check.yml
   # these checks must be always executed
-  tags: [openwisp2fw, check, install, compile, generator, build]
+  tags: [openwisp2fw, check, install]
 
 # install system dependencies
 - include: 1-apt.yml
