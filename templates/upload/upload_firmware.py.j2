@@ -63,23 +63,41 @@ for org_slug, org_data in CATEGORIES.items():
     category_id = org_data[0]
     flavour = org_data[1]
 
-    # create build
-    response = requests.post(
+    # check if build already exists
+    response = requests.get(
         BUILD_URL,
         headers=HEADERS,
-        data=jsonify({
+        params={
             'version': VERSION_NUMBER,
             'category': category_id,
-            'os': OS_IDENTIFIER
-        }),
+        },
     )
-
-    if response.status_code != 201:
-        print('It was not possible to create a build.')
+    if response.status_code != 200:
+        print('It was not possible to fetch current builds.')
         print(response.content.decode())
         sys.exit(1)
 
-    BUILD_ID = response.json()['id']
+    if response.json()['count'] > 0:
+        BUILD_ID = response.json()['results'][0]['id']
+    else:
+        # create build
+        response = requests.post(
+            BUILD_URL,
+            headers=HEADERS,
+            data=jsonify({
+                'version': VERSION_NUMBER,
+                'category': category_id,
+                'os': OS_IDENTIFIER
+            }),
+        )
+
+        if response.status_code != 201:
+            print('It was not possible to create a build.')
+            print(response.content.decode())
+            sys.exit(1)
+
+        BUILD_ID = response.json()['id']
+
     UPLOAD_IMAGE_URL = f'{BUILD_URL}{BUILD_ID}/image/'
 
     for image_file in IMAGE_TYPES:
@@ -102,4 +120,8 @@ for org_slug, org_data in CATEGORIES.items():
             },
             files={'file': BIN_FILE},
         )
-        assert response.status_code == 201
+        if response.status_code != 201:
+            print(
+                f'Got error for {org_slug}, {image_file}: '
+                f'{response.content.decode("utf8")}; Skiping...'
+            )

@@ -340,7 +340,11 @@ Other important points to know about the `upload_firmware.py` script:
 - The script reads `CONFIG_VERSION_DIST` and `CONFIG_VERSION_NUMBER`
   from the `.config` file of the OpenWrt source code to determine the build
   version.
-- The script will fail if a build with the same version and category already exists (it does not attempt to upload images to an existing build).
+- The script will find out if a build with the same version and category already exists
+  and try to add images to that build instead of creating a new one, if duplicates
+  are found, a failure message will be printed to the console but the script will not
+  terminate; this allows to generate images for new hardware models and
+  add them to existing builds
 
 Adding files to images
 ======================
