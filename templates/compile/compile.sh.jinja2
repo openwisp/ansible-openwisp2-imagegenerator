@@ -40,6 +40,7 @@ if [ ! -f {{ control_file }} ]; then
     # profile information can still be necessary to avoid "image is too big" error in some cases
     echo "CONFIG_TARGET_{{ target.system }}_{{ profile_config_partial }}=y" >> .config;
     make defconfig
+    make clean
     make -j {{ cores }} BUILD_LOG=1
     touch {{ control_file }}
 fi;
