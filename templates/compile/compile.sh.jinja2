@@ -43,6 +43,7 @@ if [ ! -f {{ control_file }} ]; then
     make clean
     make -j {{ cores }} BUILD_LOG=1
     touch {{ control_file }}
+    ./find-{{ target.system }}-{{ target.get('subtarget', 'generic') }}.sh
 fi;
 
 {% endfor %}

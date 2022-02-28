@@ -14,6 +14,13 @@
     src: compile/.config.jinja2
     dest: "{{ openwisp2fw_source_dir }}/.config.default"
 
+- name: Create find scripts on server
+  template:
+    src: compile/find.sh.jinja2
+    dest: "{{ openwisp2fw_source_dir }}/find-{{ item.system }}-{{ item.subtarget|default('generic') }}.sh"
+    mode: 0755
+  with_items: "{{ openwisp2fw_source_targets }}"
+
 - name: Prepare compile.sh
   template:
     src: compile/compile.sh.jinja2

@@ -8,20 +8,6 @@
     path: "{{ openwisp2fw_generator_dir }}"
     state: directory
 
-- name: Create find scripts on server
-  template:
-    src: generator/find.sh.jinja2
-    dest: "{{ openwisp2fw_source_dir }}/find-{{ item.system }}-{{ item.subtarget|default('generic') }}.sh"
-    mode: 0755
-  with_items: "{{ openwisp2fw_source_targets }}"
-
-- name: Call find scripts
-  command: "{{ openwisp2fw_source_dir }}/find-{{ item.system }}-{{ item.subtarget|default('generic') }}.sh"
-  args:
-    chdir: "{{ openwisp2fw_source_dir }}"
-    creates: "{{ openwisp2fw_generator_dir }}/{{ item.system }}-{{ item.subtarget|default('generic') }}.gz"
-  with_items: "{{ openwisp2fw_source_targets }}"
-
 - name: Extract copies of imagebuilder archives
   unarchive:
     copy: false
