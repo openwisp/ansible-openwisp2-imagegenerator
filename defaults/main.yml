@@ -45,8 +45,7 @@ openwisp2fw_source_feeds:
 # the following packages will be compiled and added
 # to all the firmware images by default
 openwisp2fw_source_default_packages:
-    - openwisp-config-{{ openwisp2fw_ssl_lib }}
-    - luci-openwisp-{{ openwisp2fw_ssl_lib }}
+    - openwisp-config
     - openvpn-{{ openwisp2fw_ssl_lib }}
 # the following packages are compiled for convenience
 # so they can be added by using playbook variables if needed
@@ -112,7 +111,7 @@ openwisp2fw_default_packages:
     - px5g
     - libustream-{{ openwisp2fw_ssl_lib }}
     - openvpn-{{ openwisp2fw_ssl_lib }}
-    - openwisp-config-{{ openwisp2fw_ssl_lib }}
+    - openwisp-config
 # default unmanaged list for openwisp-config
 openwisp2fw_default_unmanaged:
     - system.@led

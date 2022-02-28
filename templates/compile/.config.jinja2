@@ -20,8 +20,5 @@ CONFIG_PACKAGE_{{ package }}=y
 {{ config }}
 {% endfor %}
 
-{% set openwisp_config_pkg = 'openwisp-config-{0}'.format(openwisp2fw_ssl_lib) %}
-{% if openwisp_config_pkg in openwisp2fw_source_default_packages %}
 # allow to build curl with different ssl library
 CONFIG_LIBCURL_{{ openwisp2fw_ssl_lib|upper }}=y
-{% endif %}
