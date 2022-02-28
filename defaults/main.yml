@@ -31,10 +31,6 @@ openwisp2fw_source_feeds:
       location: https://github.com/openwisp/openwisp-config.git
       branch: master
     - method: src-git
-      name: luciopenwisp
-      location: https://github.com/openwisp/luci-openwisp.git
-      branch: master
-    - method: src-git
       name: packages
       location: https://github.com/openwrt/packages.git
       branch: openwrt-19.07
@@ -114,8 +110,6 @@ openwisp2fw_default_packages:
     - uhttpd
     - uhttpd-mod-ubus
     - px5g
-    - luci-theme-openwisp
-    - luci-mod-openwisp
     - libustream-{{ openwisp2fw_ssl_lib }}
     - openvpn-{{ openwisp2fw_ssl_lib }}
     - openwisp-config-{{ openwisp2fw_ssl_lib }}
