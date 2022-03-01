@@ -1,13 +1,3 @@
-- name: "Remove {{ openwisp2fw_generator_dir }} (cleanup)"
-  file:
-    path: "{{ openwisp2fw_generator_dir }}"
-    state: absent
-
-- name: "Create {{ openwisp2fw_generator_dir }}"
-  file:
-    path: "{{ openwisp2fw_generator_dir }}"
-    state: directory
-
 - name: Extract copies of imagebuilder archives
   unarchive:
     copy: false

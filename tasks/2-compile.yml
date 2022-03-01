@@ -21,6 +21,16 @@
     mode: 0755
   with_items: "{{ openwisp2fw_source_targets }}"
 
+- name: "Remove {{ openwisp2fw_generator_dir }} (cleanup)"
+  file:
+    path: "{{ openwisp2fw_generator_dir }}"
+    state: absent
+
+- name: "Create {{ openwisp2fw_generator_dir }}"
+  file:
+    path: "{{ openwisp2fw_generator_dir }}"
+    state: directory
+
 - name: Prepare compile.sh
   template:
     src: compile/compile.sh.jinja2
