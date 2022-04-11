@@ -39,7 +39,7 @@ def find_config_line(config_name):
             raise ValueError(f'{config_name} not found')
 
 
-API_URL = f'{BASE_URL}/api/v1/firmware/'
+API_URL = f'{BASE_URL}/api/v1/firmware-upgrader/'
 BUILD_URL = f'{API_URL}build/'
 AUTHORIZATION_HEADER = {'Authorization': f'Bearer {TOKEN}'}
 CONTENT_TYPE_HEADER = {'Content-Type': 'application/json'}
