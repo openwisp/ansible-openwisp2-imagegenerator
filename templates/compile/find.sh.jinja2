@@ -5,11 +5,32 @@ set -e
 {% else %}
     {% set partial = item['system'] %}
 {% endif %}
-{% set filename = '{0}/{1}-{2}.gz'.format(openwisp2fw_generator_dir,
-                                          item['system'],
-                                          item.get('subtarget', 'generic'))
-%}
+{% set filename = '{0}/{1}-{2}'.format(
+  openwisp2fw_generator_dir,
+  item['system'],
+  item.get('subtarget', 'generic')
+) %}
 
+# Move and rename the file while keeping the original extension
 find {{ openwisp2fw_source_dir }}/bin/ \
      -iname '*-imagebuilder*{{ partial }}*' \
-     -exec cp {} {{ filename }} \;
+     -exec bash -c '
+        for file; do
+            base_name=$(basename "$file")
+            # Extract the extension
+            extension="${base_name##*.}"
+
+            # Check if there is a second extension (for .tar.zst or .tar.gz)
+            if [[ "$base_name" == *.*.* ]]; then
+                # Get the part of the filename before the last extension
+                base_name_without_last_extension="${base_name%.*}"
+                # Combine the last two parts to form the full extension
+                full_extension=".${base_name_without_last_extension##*.}.$extension"
+            else
+                full_extension=".$extension"
+            fi
+
+            destination="{{ filename }}$full_extension"
+            cp "$file" "$destination"
+        done
+     ' bash {} +

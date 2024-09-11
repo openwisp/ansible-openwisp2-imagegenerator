@@ -11,6 +11,7 @@ openwisp2fw_apt_make_dependencies:
     - libncurses5-dev
     - zlib1g-dev
     - unzip
+    - zstd
     - libssl-dev
     - subversion
     - wget
