@@ -15,18 +15,22 @@
   tags: [openwisp2fw, compile]
   when: recompile
 
-# prepare ImageGenerator directory and files
+# extract ImageGenerator archives
+- include: 3-extract.yml
+  tags: [openwisp2fw, extract]
+
+# prepare image files for all organizations
 # but do not compile images yet
-- include: 3-generator.yml
-  tags: [openwisp2fw, generator]
+- include: 4-generator.yml
+  tags: [openwisp2fw, generator, files]
 
 # build images for each organization and flavour
 # store binaries in versioned directories
-- include: 4-build.yml
+- include: 5-build.yml
   tags: [openwisp2fw, build]
 
 # upload firmware images
 # to openwisp-firmware-upgrader
-- include: 5-upload.yml
+- include: 6-upload.yml
   tags: [openwisp2fw, upload]
   when: openwisp2fw_uploader.enabled

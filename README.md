@@ -211,13 +211,13 @@ The build process is composed of the following steps.
 
 ### 1. Installation of dependencies
 
-**tag**: `install`
+**Tag**: `install`.
 
 In this phase the operating system dependencies needed for the subsequent steps are installed or upgraded.
 
 ### 2. Compilation
 
-**tag**: `compile`
+**Tag**: `compile`.
 
 The OpenWrt source is compiled in order to produce something
 called "[Image Generator](https://openwrt.org/docs/guide-user/additional-software/imagebuilder)".
@@ -229,9 +229,9 @@ The source is downloaded and compiled in the directory specified in
 
 ### 3. Preparation of generators
 
-**tag**: `generator`
+**Tags**: `extract`, `generator` (or `files`).
 
-During this step the *image generators* are extracted and prepared
+During these steps the *image generators* are extracted and prepared
 for building different images for different [organizations](#organizations), each organization
 can build images for different [flavours](#flavours) (eg: full-featured, minimal, mesh, ecc);
 
@@ -240,7 +240,7 @@ The images are extracted and prepared in the directory specified in
 
 ### 4. Building of final images
 
-**tag**: `build`
+**Tag**: `build`.
 
 In this phase a series of images is produced.
 
@@ -264,6 +264,8 @@ The images will be created in the directory specified in
 `openwisp2fw_bin_dir`.
 
 ### 5. Upload images to OpenWISP Firmware Upgrader
+
+**Tag**: `upload`.
 
 The last step is to upload images to the
 [OpenWISP Firmware Upgrader module](https://github.com/openwisp/openwisp-firmware-upgrader).
