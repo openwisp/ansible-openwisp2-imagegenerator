@@ -2,6 +2,8 @@
   shell: |
     if [ -f "{{ openwisp2fw_generator_dir }}/{{ item.system }}-{{ item.subtarget|default('generic') }}.tar.zst" ]; then
       tar --use-compress-program=unzstd -xf "{{ openwisp2fw_generator_dir }}/{{ item.system }}-{{ item.subtarget|default('generic') }}.tar.zst" -C "{{ openwisp2fw_generator_dir }}"
+    elif [ -f "{{ openwisp2fw_generator_dir }}/{{ item.system }}-{{ item.subtarget|default('generic') }}.tar.xz" ]; then
+      tar -xJf "{{ openwisp2fw_generator_dir }}/{{ item.system }}-{{ item.subtarget|default('generic') }}.tar.xz" -C "{{ openwisp2fw_generator_dir }}"
     else
       tar -xzf "{{ openwisp2fw_generator_dir }}/{{ item.system }}-{{ item.subtarget|default('generic') }}.tar.gz" -C "{{ openwisp2fw_generator_dir }}"
     fi
