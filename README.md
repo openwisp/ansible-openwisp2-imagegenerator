@@ -1,7 +1,7 @@
 ansible-openwisp2-imagegenerator
 ================================
 
-[![Galaxy](http://img.shields.io/badge/galaxy-openwisp.openwisp2--imagegenerator-blue.svg?style=flat-square)](https://galaxy.ansible.com/openwisp/openwisp2-imagegenerator/)
+[![Galaxy](http://img.shields.io/badge/galaxy-openwisp.openwisp2--imagegenerator-blue.svg?style=flat-square)](https://galaxy.ansible.com/ui/standalone/roles/openwisp/openwisp2-imagegenerator/)
 
 This ansible role allows to build several openwisp2 firmware images for different organizations while
 keeping track of their configurations.
