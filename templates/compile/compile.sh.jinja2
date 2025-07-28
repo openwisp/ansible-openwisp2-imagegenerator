@@ -13,6 +13,10 @@ set -e
 ./scripts/feeds update -a
 ./scripts/feeds install -a
 
+{% if openwisp2fw_feeds_instructions %}
+{{ openwisp2fw_feeds_instructions }}
+{% endif %}
+
 # remove eventual failed compilations artifacts and ignore errors
 rm .owf2_compiled_* 2>/dev/null || true
 

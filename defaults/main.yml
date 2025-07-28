@@ -43,6 +43,8 @@ openwisp2fw_source_feeds:
       name: targets
       location: https://github.com/openwrt/targets.git
       branch: master
+# custom instructions to be executed after feeds have been installed
+openwisp2fw_feeds_instructions: ""
 # the following packages will be compiled and added
 # to all the firmware images by default
 openwisp2fw_source_default_packages:
