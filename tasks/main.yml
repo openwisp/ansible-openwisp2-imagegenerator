@@ -1,36 +1,36 @@
 # perform a check of prerequisites before proceding
 # "fail fast and early"
-- include: 0-check.yml
+- import_tasks: 0-check.yml
   # these checks must be always executed
   tags: [openwisp2fw, check, install]
 
 # install system dependencies
-- include: 1-apt.yml
+- import_tasks: 1-apt.yml
   tags: [openwisp2fw, install]
 
 # compile OpenWRT in order to produce the ImageBuilder(s)
 # these actions are performed only if "recompile=1" is passed as an extra param
 # or if recompile == true
-- include: 2-compile.yml
+- import_tasks: 2-compile.yml
   tags: [openwisp2fw, compile]
   when: recompile
 
 # extract ImageGenerator archives
-- include: 3-extract.yml
+- import_tasks: 3-extract.yml
   tags: [openwisp2fw, extract]
 
 # prepare image files for all organizations
 # but do not compile images yet
-- include: 4-generator.yml
+- import_tasks: 4-generator.yml
   tags: [openwisp2fw, generator, files]
 
 # build images for each organization and flavour
 # store binaries in versioned directories
-- include: 5-build.yml
+- import_tasks: 5-build.yml
   tags: [openwisp2fw, build]
 
 # upload firmware images
 # to openwisp-firmware-upgrader
-- include: 6-upload.yml
+- import_tasks: 6-upload.yml
   tags: [openwisp2fw, upload]
   when: openwisp2fw_uploader.enabled
